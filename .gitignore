@@ -1,0 +1,6 @@
+# folders
+.idea/
+target/
+
+# file types
+*.iml
