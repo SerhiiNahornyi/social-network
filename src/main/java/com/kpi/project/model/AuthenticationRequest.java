@@ -1,14 +1,15 @@
 package com.kpi.project.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class AuthenticationRequest {
 
     private String username;
     private String password;
+
 }

@@ -1,6 +1,6 @@
 package com.kpi.project.service;
 
-import org.springframework.security.core.userdetails.User;
+import com.kpi.project.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +13,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return new User("user", "pass", new ArrayList<>());
+        com.kpi.project.model.User user = new User();
+        user.setLogin("user");
+        user.setPassword("pass");
+        return user;
     }
 }
