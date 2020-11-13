@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final String SIGNING_KEY = "secret";
+    private static final int THIRTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 30;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -38,13 +39,13 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
+        final Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + THIRTY_MINUTES_IN_MILLISECONDS))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY).compact();
     }
 
