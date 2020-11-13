@@ -4,13 +4,29 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.UUID;
 
 @Data
+@Entity
+@Table(name = "USERS")
 public class User implements UserDetails {
 
+    @Id
+    @GeneratedValue
+    @Column(name = "USER_ID")
+    private UUID id;
+
+    @Column(name = "EMAIL")
     private String email;
+
+    @Column(name = "PASSWORD")
     private String password;
 
     @Override
