@@ -3,7 +3,6 @@ package com.kpi.project.service;
 import com.kpi.project.model.User;
 import com.kpi.project.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +36,7 @@ public class UserServiceTest {
         given(userRepository.loadByEmailOrUsername("login")).willReturn(user);
 
         // when
-        final UserDetails actualUser = testingInstance.loadUserByUsername("login");
+        final User actualUser = testingInstance.loadUserByUsername("login");
 
         // then
         verify(userRepository).loadByEmailOrUsername("login");
