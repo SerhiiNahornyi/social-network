@@ -3,6 +3,7 @@ package com.kpi.project.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,9 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final String SIGNING_KEY = "secret";
-    private static final int THIRTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 30;
+
+    @Value("${security.token.expiration.time}")
+    private int tokenExpirationTime;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -45,7 +48,7 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + THIRTY_MINUTES_IN_MILLISECONDS))
+                .setExpiration(new Date(System.currentTimeMillis() + tokenExpirationTime))
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY).compact();
     }
 
