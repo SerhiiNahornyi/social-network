@@ -11,8 +11,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = new User();
-        user.setLogin("user");
+        final User user = new User();
+        user.setEmail("user");
         user.setPassword("pass");
         return user;
     }

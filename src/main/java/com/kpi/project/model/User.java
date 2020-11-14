@@ -1,25 +1,21 @@
 package com.kpi.project.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-
 public class User implements UserDetails {
-    private String login;
+
+    private String email;
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     @Override
@@ -29,7 +25,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
