@@ -32,14 +32,14 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("User should be loaded by email or password")
-    public void test() {
+    public void loadUserByUsernameShouldReturnUserFoundByEmailOrUsername() {
         // given
         given(userRepository.loadByEmailOrUsername("login")).willReturn(user);
 
         // when
         final UserDetails actualUser = testingInstance.loadUserByUsername("login");
 
+        // then
         verify(userRepository).loadByEmailOrUsername("login");
         assertThat(actualUser).isEqualTo(user);
     }
