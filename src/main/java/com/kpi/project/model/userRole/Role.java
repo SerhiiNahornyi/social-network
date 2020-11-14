@@ -2,7 +2,7 @@ package com.kpi.project.model.userRole;
 
 import org.springframework.security.core.GrantedAuthority;
 
-@SuppressWarnings({"checkstyle:hideutilityclassconstructor"})
+@SuppressWarnings("checkstyle:hideutilityclassconstructor")
 public enum Role implements GrantedAuthority {
 
     ADMIN(Code.ADMIN),
