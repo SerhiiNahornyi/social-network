@@ -34,7 +34,6 @@ public class UserValidatorTest {
         user.setEmail("email@mail.com");
     }
 
-
     @Test
     public void validateUserShouldThrowExceptionIfPasswordDoesNotMatch() {
         // given

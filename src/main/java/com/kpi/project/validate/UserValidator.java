@@ -4,7 +4,6 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -12,8 +11,11 @@ import java.util.Objects;
 @Component
 public class UserValidator {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserValidator(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public void validateUser(UserDto userToValidate) {
         if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {

@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -39,7 +38,8 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User(1L, "mail@mail.com", "username", "password", Collections.singletonList(Role.ADMIN) );
+        user = new User(1L, "mail@mail.com", "username",
+                "password", Collections.singletonList(Role.ADMIN));
     }
 
     @Test
