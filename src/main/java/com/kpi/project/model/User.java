@@ -7,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -19,9 +19,9 @@ import java.util.UUID;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
-    private UUID id;
+    private Long id;
 
     @Column(name = "EMAIL")
     private String email;
