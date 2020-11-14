@@ -3,7 +3,7 @@ package com.kpi.project.service;
 import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.mapper.UserMapper;
-import com.kpi.project.model.userRole.Role;
+import com.kpi.project.model.enums.Role;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
