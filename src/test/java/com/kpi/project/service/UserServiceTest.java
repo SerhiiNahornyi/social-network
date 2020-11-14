@@ -1,6 +1,7 @@
 package com.kpi.project.service;
 
 import com.kpi.project.model.User;
+import com.kpi.project.model.userRole.Role;
 import com.kpi.project.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -27,7 +29,7 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User(1L, "mail@mail.com", "username", "password");
+        user = new User(1L, "mail@mail.com", "username", "password", Collections.singletonList(Role.ADMIN) );
     }
 
     @Test
