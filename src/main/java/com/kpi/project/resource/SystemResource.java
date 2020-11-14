@@ -1,7 +1,7 @@
 package com.kpi.project.resource;
 
-import com.kpi.project.model.AuthenticationRequest;
-import com.kpi.project.model.AuthenticationResponse;
+import com.kpi.project.model.authentication.AuthenticationRequest;
+import com.kpi.project.model.authentication.AuthenticationResponse;
 import com.kpi.project.service.UserService;
 import com.kpi.project.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
