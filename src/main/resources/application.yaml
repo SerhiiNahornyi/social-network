@@ -1,8 +1,7 @@
 # Security config
 security:
-  token:
-    expiration:
-      time: 1800000
+  token_expiration_time: 1800000
+  signing_key: some-signing-key
 
 # DB config
 spring:
