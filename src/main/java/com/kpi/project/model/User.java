@@ -1,6 +1,8 @@
 package com.kpi.project.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "USERS")
 public class User implements UserDetails {
@@ -23,8 +27,11 @@ public class User implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
+
+    @Column(name = "USERNAME", unique = true)
+    private String username;
 
     @Column(name = "PASSWORD")
     private String password;
@@ -32,16 +39,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
     }
 
     @Override
