@@ -1,18 +1,21 @@
 package com.kpi.project.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class User implements UserDetails {
-    String login;
-    String password;
+    private String login;
+    private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
