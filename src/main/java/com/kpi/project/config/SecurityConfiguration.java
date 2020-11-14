@@ -3,6 +3,7 @@ package com.kpi.project.config;
 import com.kpi.project.filter.JwtRequestFilter;
 import com.kpi.project.service.UserService;
 import com.kpi.project.util.model.JwtProperties;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -34,8 +35,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final String[] testEndpoints = {"test/string", "/test/error", "/test/error2"};
+
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/authenticate", "/user/registration").permitAll()
+                .authorizeRequests()
+                .antMatchers(
+                        (String[]) ArrayUtils.addAll(testEndpoints,
+                                "/authenticate", "/user/registration"))
+                .permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

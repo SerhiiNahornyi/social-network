@@ -1,6 +1,6 @@
 package com.kpi.project.model;
 
-import com.kpi.project.model.userRole.Role;
+import com.kpi.project.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
