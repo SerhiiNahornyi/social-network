@@ -39,7 +39,7 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         user = new User(1L, "mail@mail.com", "username",
-                "password", Collections.singletonList(Role.ADMIN));
+                "password", Collections.singleton(Role.ADMIN));
     }
 
     @Test

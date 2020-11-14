@@ -1,9 +1,11 @@
 package com.kpi.project.resource;
 
+import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +21,11 @@ public class UserResource {
     @PostMapping("/user/registration")
     public ResponseEntity<UserDto> showRegistrationForm(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.saveUser(userDto));
+    }
+
+    @PutMapping("/user/update/role")
+    public ResponseEntity<User> updateUsersRole(@RequestBody UserDto userDto) {
+        User user = userService.updateUserRoles(userDto);
+        return ResponseEntity.ok(user);
     }
 }

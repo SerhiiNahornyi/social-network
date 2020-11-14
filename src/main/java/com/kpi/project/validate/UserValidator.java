@@ -2,11 +2,16 @@ package com.kpi.project.validate;
 
 import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
+import com.kpi.project.model.exception.ValidatorException;
+import com.kpi.project.model.userRole.Role;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class UserValidator {
@@ -15,6 +20,22 @@ public class UserValidator {
 
     public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public User optionlValidator(Optional<User> user, Set<String> roles) {
+        final User userWithNewRoles;
+
+        if (user.isEmpty()) {
+            throw new ValidatorException("User is not exist");
+        } else {
+            userWithNewRoles = user.get();
+
+            final Set<Role> newRoles = roles.stream().map(Role::valueOf).collect(Collectors.toSet());
+
+            userWithNewRoles.setRoles(newRoles);
+        }
+
+        return userWithNewRoles;
     }
 
     public void validateUser(UserDto userToValidate) {

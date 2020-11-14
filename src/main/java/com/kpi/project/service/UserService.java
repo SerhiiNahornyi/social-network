@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -25,6 +26,12 @@ public class UserService implements UserDetailsService {
         this.userMapper = userMapper;
     }
 
+    public User updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
+        final Optional<User> user = userRepository.findById(userDto.getId());
+
+        return userRepository.save(userValidator.optionlValidator(user, userDto.getRoles()));
+    }
+
     @Override
     public User loadUserByUsername(String login) throws UsernameNotFoundException {
 
@@ -34,7 +41,7 @@ public class UserService implements UserDetailsService {
     public UserDto saveUser(UserDto userDto) {
         userValidator.validateUser(userDto);
         final User user = userMapper.dtoToUser(userDto);
-        user.setRoles(Collections.singletonList(Role.USER));
+        user.setRoles(Collections.singleton(Role.USER));
 
         return userMapper.userToDto(userRepository.save(user));
     }
