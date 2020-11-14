@@ -1,0 +1,15 @@
+# Security config
+security:
+  token:
+    expiration:
+      time: 1800000
+
+# DB config
+spring:
+  datasource:
+    password: root
+    url: jdbc:mysql://localhost:3306/KpiSocialNetwork
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
