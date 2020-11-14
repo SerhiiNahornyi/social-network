@@ -1,4 +1,4 @@
-package com.kpi.project.model.userRole;
+package com.kpi.project.model.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 
