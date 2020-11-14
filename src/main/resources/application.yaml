@@ -13,3 +13,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+# Server properties
+server:
+  port: 8092
