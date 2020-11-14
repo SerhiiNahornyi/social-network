@@ -1,4 +1,4 @@
-package com.kpi.project.model;
+package com.kpi.project.model.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
