@@ -1,9 +1,9 @@
 package com.kpi.project.util;
 
+import com.kpi.project.util.model.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,11 @@ import java.util.function.Function;
 @Service
 public class JwtUtil {
 
-    private static final String SIGNING_KEY = "secret";
+    private final JwtProperties jwtProperties;
 
-    @Value("${security.token.expiration.time}")
-    private int tokenExpirationTime;
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -34,7 +35,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(jwtProperties.getSigningKey()).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -48,8 +49,8 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpirationTime))
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenExpirationTime()))
+                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSigningKey()).compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
