@@ -2,6 +2,7 @@ package com.kpi.project.validator;
 
 import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
+import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
@@ -103,5 +109,27 @@ public class UserValidatorTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> testingInstance.validateUser(user))
                 .withMessage("Username already exists");
+    }
+
+    @Test
+    public void validateUserShouldThrowExceptionIfUserIsNotExist() {
+        // given
+        final Set<String> roles = new HashSet(Arrays.asList("ADMIN", "USER"));
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.userRolesUpdateValidator(1L, roles))
+                .withMessage("User with id : 1, not exists");
+    }
+
+    @Test
+    public void validateUserShouldThrowExceptionIfRolesIsNotExist() {
+        // given
+        final Set<String> roles = new HashSet(Arrays.asList("NOT_EXISTED_ROLE"));
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.userRolesUpdateValidator(1L, roles))
+                .withMessage("Not existing role: NOT_EXISTED_ROLE");
     }
 }

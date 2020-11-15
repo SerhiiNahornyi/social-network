@@ -4,6 +4,9 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapper {
 
@@ -21,6 +24,11 @@ public class UserMapper {
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
         userDto.setUsername(user.getUsername());
+
+        final Set<String> newRoles = user.getRoles().stream()
+                .map(Enum::toString)
+                .collect(Collectors.toSet());
+        userDto.setRoles(newRoles);
 
         return userDto;
     }

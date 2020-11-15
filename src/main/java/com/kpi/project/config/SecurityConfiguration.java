@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
-                        (String[]) ArrayUtils.addAll(testEndpoints,
+                        ArrayUtils.addAll(testEndpoints,
                                 "/authenticate", "/user/registration"))
                 .permitAll()
                 .anyRequest().authenticated()
