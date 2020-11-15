@@ -12,8 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
 @Component
 public class UserValidator {
 
@@ -26,7 +24,7 @@ public class UserValidator {
     public User userUpdateValidator(User user, Set<String> roles) {
         final User userWithNewRoles;
 
-        if (isNull(user)) {
+        if (Objects.isNull(user)) {
             throw new ValidatorException("User is not exist");
         } else {
             userWithNewRoles = user;
