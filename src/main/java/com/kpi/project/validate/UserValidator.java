@@ -9,9 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class UserValidator {
@@ -22,13 +23,13 @@ public class UserValidator {
         this.userRepository = userRepository;
     }
 
-    public User optionlValidator(Optional<User> user, Set<String> roles) {
+    public User userUpdateValidator(User user, Set<String> roles) {
         final User userWithNewRoles;
 
-        if (user.isEmpty()) {
+        if (isNull(user)) {
             throw new ValidatorException("User is not exist");
         } else {
-            userWithNewRoles = user.get();
+            userWithNewRoles = user;
 
             final Set<Role> newRoles = roles.stream().map(Role::valueOf).collect(Collectors.toSet());
 

@@ -1,6 +1,5 @@
 package com.kpi.project.resource;
 
-import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,8 @@ public class UserResource {
     }
 
     @PutMapping("/user/update/role")
-    public ResponseEntity<User> updateUsersRole(@RequestBody UserDto userDto) {
-        User user = userService.updateUserRoles(userDto);
+    public ResponseEntity<UserDto> updateUsersRole(@RequestBody UserDto userDto) {
+        UserDto user = userService.updateUserRoles(userDto);
         return ResponseEntity.ok(user);
     }
 }

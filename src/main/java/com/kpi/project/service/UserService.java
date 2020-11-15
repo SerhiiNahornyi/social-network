@@ -2,8 +2,8 @@ package com.kpi.project.service;
 
 import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
-import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.model.enums.Role;
+import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -26,10 +25,10 @@ public class UserService implements UserDetailsService {
         this.userMapper = userMapper;
     }
 
-    public User updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
-        final Optional<User> user = userRepository.findById(userDto.getId());
+    public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
+        final User user = userRepository.findByIdIdentifier(userDto.getId());
 
-        return userRepository.save(userValidator.optionlValidator(user, userDto.getRoles()));
+        return userMapper.userToDto(userRepository.save(userValidator.userUpdateValidator(user, userDto.getRoles())));
     }
 
     @Override
