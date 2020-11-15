@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 
@@ -30,6 +31,9 @@ public class UserServiceTest {
 
     @Mock
     private UserValidator userValidator;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private User user;
 
@@ -56,7 +60,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loadUserByUsernameShouldReturnSavedUser() {
+    public void saveUserShouldReturnSavedUser() {
         // given
         final UserDto userDto = new UserDto();
         userDto.setPassword("password");
@@ -67,6 +71,7 @@ public class UserServiceTest {
         given(userMapper.dtoToUser(userDto)).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.save(user)).willReturn(user);
+        given(passwordEncoder.encode("password")).willReturn("hashedPassword");
 
         // when
         final UserDto actualUser = testingInstance.saveUser(userDto);
