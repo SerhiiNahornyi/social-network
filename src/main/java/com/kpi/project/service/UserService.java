@@ -8,6 +8,7 @@ import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,11 +21,14 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserValidator userValidator, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserValidator userValidator,
+                       UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
@@ -49,6 +53,7 @@ public class UserService implements UserDetailsService {
         userValidator.validateUser(userDto);
         final User user = userMapper.dtoToUser(userDto);
         user.setRoles(Collections.singleton(Role.USER));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userMapper.userToDto(userRepository.save(user));
     }

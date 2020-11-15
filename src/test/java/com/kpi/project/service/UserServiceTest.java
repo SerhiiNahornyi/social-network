@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,6 +38,9 @@ public class UserServiceTest {
 
     @Mock
     private UserValidator userValidator;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     private User user;
 
@@ -71,11 +75,12 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loadUserByUsernameShouldReturnSavedUser() {
+    public void saveUserShouldReturnSavedUser() {
         // given
         given(userMapper.dtoToUser(userDto)).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.save(user)).willReturn(user);
+        given(passwordEncoder.encode("password")).willReturn("hashedPassword");
 
         // when
         final UserDto actualUser = testingInstance.saveUser(userDto);
