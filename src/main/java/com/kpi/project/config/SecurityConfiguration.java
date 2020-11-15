@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final JwtRequestFilter jwtRequestFilter;
 
-    public SecurityConfiguration(UserService userService, @Lazy JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfiguration(@Lazy UserService userService, @Lazy JwtRequestFilter jwtRequestFilter) {
         this.userService = userService;
         this.jwtRequestFilter = jwtRequestFilter;
     }
