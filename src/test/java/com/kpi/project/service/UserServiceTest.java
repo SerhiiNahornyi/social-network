@@ -6,6 +6,7 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
+import org.assertj.core.api.IterableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,7 @@ public class UserServiceTest {
     private UserValidator userValidator;
 
     private User user;
+
     private UserDto userDto;
 
     @InjectMocks
@@ -91,15 +93,15 @@ public class UserServiceTest {
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
         userDto.setRoles(updatedRoles);
-        given(userValidator.userUpdateValidator(user, updatedRoles)).willReturn(user);
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
+
         // when
         final UserDto actualUser = testingInstance.updateUserRoles(userDto);
 
-        Set<GrantedAuthority> expectedRoles = Stream.of("ADMIN", "USER").map(Role::valueOf).collect(Collectors.toSet());
+        // then
         assertThat(actualUser).isNotNull();
-        assertThat(actualUser).isEqualTo(actualUser);
+        assertThat(actualUser.getRoles()).containsExactly("ADMIN", "USER");
     }
 }

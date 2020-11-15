@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class UserValidator {
@@ -21,20 +20,17 @@ public class UserValidator {
         this.userRepository = userRepository;
     }
 
-    public User userUpdateValidator(User user, Set<String> roles) {
-        final User userWithNewRoles;
-
-        if (Objects.isNull(user)) {
-            throw new ValidatorException("User is not exist");
-        } else {
-            userWithNewRoles = user;
-
-            final Set<Role> newRoles = roles.stream().map(Role::valueOf).collect(Collectors.toSet());
-
-            userWithNewRoles.setRoles(newRoles);
+    public void userRolesUpdateValidator(Long userId, Set<String> roles) {
+        for (String role : roles) {
+            try {
+                Role.valueOf(role);
+            } catch (Exception e) {
+                throw new ValidatorException(String.format("Not existing role: %s", role));
+            }
         }
-
-        return userWithNewRoles;
+        if (Objects.isNull(userRepository.findByIdIdentifier(userId))) {
+            throw new ValidatorException(String.format("User with id : %s, not exists", userId));
+        }
     }
 
     public void validateUser(UserDto userToValidate) {

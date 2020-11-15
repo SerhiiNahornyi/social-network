@@ -19,12 +19,14 @@ public class UserResource {
 
     @PostMapping("/user/registration")
     public ResponseEntity<UserDto> showRegistrationForm(@RequestBody UserDto userDto) {
+
         return ResponseEntity.ok(userService.saveUser(userDto));
     }
 
-    @PutMapping("/user/update/role")
+    @PutMapping("/user/update/roles")
     public ResponseEntity<UserDto> updateUsersRole(@RequestBody UserDto userDto) {
-        UserDto user = userService.updateUserRoles(userDto);
+        final UserDto user = userService.updateUserRoles(userDto);
+
         return ResponseEntity.ok(user);
     }
 }
