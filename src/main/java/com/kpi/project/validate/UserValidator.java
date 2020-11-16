@@ -33,6 +33,18 @@ public class UserValidator {
         }
     }
 
+    public void validateUserPassword(UserDto userToValidate) {
+        if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {
+            throw new ValidatorException("Passwords does not match");
+        }
+        if (userToValidate.getPassword().length() < 4) {
+            throw new ValidatorException("Password length must be minimum of 4 symbols");
+        }
+        if (Objects.isNull(userRepository.findByIdIdentifier(userToValidate.getId()))) {
+            throw new ValidatorException(String.format("User with id : %s, not exists", userToValidate.getId()));
+        }
+    }
+
     public void validateUser(UserDto userToValidate) {
         if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {
             throw new ValidatorException("Passwords does not match");
@@ -46,9 +58,11 @@ public class UserValidator {
         if (StringUtils.isBlank(userToValidate.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
-        final User user = userRepository.findByEmailOrUsername(userToValidate.getEmail(), userToValidate.getUsername());
-        if (Objects.nonNull(user)) {
-            if (Objects.equals(user.getEmail(), userToValidate.getEmail())) {
+
+        final User userByEmail = userRepository.loadUserByEmail(userToValidate.getEmail());
+        final User userByUsername = userRepository.loadUserByUsername(userToValidate.getUsername());
+        if (Objects.nonNull(userByEmail) && Objects.nonNull(userByUsername)) {
+            if (Objects.equals(userByEmail.getEmail(), userToValidate.getEmail())) {
                 throw new ValidatorException("Email already exists");
             }
             throw new ValidatorException("Username already exists");

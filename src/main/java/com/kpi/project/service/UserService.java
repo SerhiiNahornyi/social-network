@@ -31,6 +31,16 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public UserDto changeUserPassword(UserDto userDto) throws UsernameNotFoundException {
+        userValidator.validateUserPassword(userDto);
+        final User userWithNewPassword = userRepository.findByIdIdentifier(userDto.getId());
+        final String newPassword = userDto.getMatchingPassword();
+        userWithNewPassword.setPassword(passwordEncoder.encode(newPassword));
+
+        return userMapper.userToDto(userRepository.save(userWithNewPassword));
+
+    }
+
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
         userValidator.userRolesUpdateValidator(userDto.getId(), userDto.getRoles());
 

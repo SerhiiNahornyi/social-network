@@ -90,7 +90,9 @@ public class UserValidatorTest {
         // given
         final User userModel = new User();
         userModel.setEmail("email@mail.com");
-        given(userRepository.findByEmailOrUsername("email@mail.com", "username")).willReturn(userModel);
+        userModel.setUsername("username2.0");
+        given(userRepository.loadUserByEmail("email@mail.com")).willReturn(userModel);
+        given(userRepository.loadUserByUsername("username")).willReturn(userModel);
 
         // expected
         assertThatIllegalArgumentException()
@@ -102,8 +104,10 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
         final User userModel = new User();
+        userModel.setEmail("email2.0@mail.com");
         userModel.setUsername("username");
-        given(userRepository.findByEmailOrUsername("email@mail.com", "username")).willReturn(userModel);
+        given(userRepository.loadUserByEmail("email@mail.com")).willReturn(userModel);
+        given(userRepository.loadUserByUsername("username")).willReturn(userModel);
 
         // expected
         assertThatIllegalArgumentException()
