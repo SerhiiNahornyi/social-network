@@ -1,40 +1,82 @@
 {
-    "extends": "tslint:recommended",
-    "rules": {
-        "max-line-length": {
-            "options": [120]
-        },
-        "new-parens": true,
-        "no-arg": true,
-        "no-bitwise": true,
-        "no-conditional-assignment": true,
-        "no-consecutive-blank-lines": false,
-        "no-console": {
-            "severity": "warning",
-            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
-        }
+  "extends": "tslint:recommended",
+  "rules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
     },
-    "jsRules": {
-        "max-line-length": {
-            "options": [120]
-        },
-        "no-empty": true,
-        "member-ordering": [true, {"order": "fields-first"}],
-        "no-magic-numbers": [true, 1, 2, 3, 0],
-        "no-reference": true,
-        "ban-comma-operator": true,
-        "curly": [true, "ignore-same-line"],
-        "no-console": [true, "log", "error"],
-        "no-duplicate-super": true,
-        "no-duplicate-switch-case": true,
-        "no-duplicate-variable": [true, "check-parameters"],
-        "no-invalid-template-strings": true,
-        "switch-default": true,
-        "triple-equals": true,
-        "use-isnan": true,
-        "no-duplicate-imports": [true, {"allow-namespace-imports": true}],
-        "arrow-return-shorthand": true,
-        "ordered-imports": true,
-        "whitespace": [true, "check-branch", "check-operator", "check-typecast"]
+    "new-parens": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": false,
+    "no-console": {
+      "severity": "warning",
+      "options": [
+        "debug",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "trace"
+      ]
     }
+  },
+  "jsRules": {
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    },
+    "no-empty": true,
+    "member-ordering": [
+      true,
+      {
+        "order": "fields-first"
+      }
+    ],
+    "no-magic-numbers": [
+      true,
+      1,
+      2,
+      3,
+      0
+    ],
+    "no-reference": true,
+    "ban-comma-operator": true,
+    "curly": [
+      true,
+      "ignore-same-line"
+    ],
+    "no-console": [
+      true,
+      "log",
+      "error"
+    ],
+    "no-duplicate-super": true,
+    "no-duplicate-switch-case": true,
+    "no-duplicate-variable": [
+      true,
+      "check-parameters"
+    ],
+    "no-invalid-template-strings": true,
+    "switch-default": true,
+    "triple-equals": true,
+    "use-isnan": true,
+    "no-duplicate-imports": [
+      true,
+      {
+        "allow-namespace-imports": true
+      }
+    ],
+    "arrow-return-shorthand": true,
+    "ordered-imports": true,
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-operator",
+      "check-typecast"
+    ]
+  }
 }
