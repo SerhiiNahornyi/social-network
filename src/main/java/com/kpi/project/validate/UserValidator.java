@@ -1,7 +1,6 @@
 package com.kpi.project.validate;
 
 import com.kpi.project.model.User;
-import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
@@ -62,10 +61,7 @@ public class UserValidator {
         }
     }
 
-    public void validateUser(UserDto userToValidate) {
-        final String userEmail = userToValidate.getEmail();
-        final String userName = userToValidate.getUsername();
-
+    public void validateUser(String userEmail, String userName) {
         if (StringUtils.isBlank(userEmail)) {
             throw new ValidatorException("Email should be present");
         }

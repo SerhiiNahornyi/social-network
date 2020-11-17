@@ -1,11 +1,9 @@
 package com.kpi.project.validator;
 
 import com.kpi.project.model.User;
-import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,8 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,22 +29,11 @@ public class UserValidatorTest {
     @InjectMocks
     private UserValidator testingInstance;
 
-    private UserDto user;
-
-    @BeforeEach
-    public void setUp() {
-        user = new UserDto();
-        user.setPassword("password");
-        user.setMatchingPassword("password");
-        user.setUsername("username");
-        user.setEmail("email@mail.com");
-    }
-
     @Test
     public void validateUserShouldThrowExceptionIfPasswordDoesNotMatch() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validatePassword("password","wrongPassword"))
+                .isThrownBy(() -> testingInstance.validatePassword("password", "wrongPassword"))
                 .withMessage("Passwords does not match");
     }
 
@@ -56,29 +41,23 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfPasswordHasIncorrectLength() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validatePassword("pa","pa"))
+                .isThrownBy(() -> testingInstance.validatePassword("pa", "pa"))
                 .withMessage("Password length must be minimum of 4 symbols");
     }
 
     @Test
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
-        // given
-        user.setEmail("");
-
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validateUser("", "username"))
                 .withMessage("Email should be present");
     }
 
     @Test
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
-        // given
-        user.setUsername("");
-
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", ""))
                 .withMessage("Username should be present");
     }
 
@@ -93,7 +72,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username"))
                 .withMessage("Email already exists");
     }
 
@@ -108,7 +87,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username"))
                 .withMessage("Username already exists");
     }
 
