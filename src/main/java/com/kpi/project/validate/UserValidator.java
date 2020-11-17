@@ -63,15 +63,18 @@ public class UserValidator {
     }
 
     public void validateUser(UserDto userToValidate) {
-        if (StringUtils.isBlank(userToValidate.getEmail())) {
+        final String userEmail = userToValidate.getEmail();
+        final String userName = userToValidate.getUsername();
+
+        if (StringUtils.isBlank(userEmail)) {
             throw new ValidatorException("Email should be present");
         }
-        if (StringUtils.isBlank(userToValidate.getUsername())) {
+        if (StringUtils.isBlank(userName)) {
             throw new ValidatorException("Username should be present");
         }
 
-        final User userByEmail = userRepository.findByEmail(userToValidate.getEmail());
-        final User userByUsername = userRepository.findByUsername(userToValidate.getUsername());
+        final User userByEmail = userRepository.findByEmail(userEmail);
+        final User userByUsername = userRepository.findByUsername(userName);
         if (Objects.nonNull(userByEmail)) {
             throw new ValidatorException("Email already exists");
         }
