@@ -22,8 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tslint src/* --fix",
-    "build:tslint": "npm run lint && npm run start"
+    "lint": "tslint src/*",
+    "build:tslint": "npm run lint && npm run build"
   },
   "eslintConfig": {
     "extends": [
