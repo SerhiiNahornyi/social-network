@@ -107,4 +107,24 @@ public class UserServiceTest {
         assertThat(actualUser).isNotNull();
         assertThat(actualUser.getRoles()).containsExactly("ADMIN", "USER");
     }
+
+    @Test
+    public void changeUserPasswordShouldReturnNewUsersPassword() {
+        // given
+        final String newPassword = "$2a$10$6N4QR2Kd84lZMVMGwymAGOZiqUOb038bWkevWntobgX8DkhQt/dc6";
+        userDto.setPassword("passwordChange");
+        userDto.setMatchingPassword("passwordChange");
+
+        given(userRepository.save(any())).willReturn(user);
+        given(userMapper.userToDto(user)).willReturn(userDto);
+        given(userRepository.findByIdIdentifier(1L)).willReturn(user);
+
+        //when
+        final UserDto actualUser = testingInstance.changeUserPassword(userDto);
+
+        //then
+        assertThat(actualUser).isNotNull();
+        assertThat(actualUser.getPassword()).isEqualTo("passwordChange");
+
+    }
 }

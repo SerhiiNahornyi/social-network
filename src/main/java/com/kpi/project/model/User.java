@@ -4,6 +4,7 @@ import com.kpi.project.model.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -36,9 +37,11 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "EMAIL", unique = true)
+    @NonNull
     private String email;
 
     @Column(name = "USERNAME", unique = true)
+    @NonNull
     private String username;
 
     @Column(name = "PASSWORD")

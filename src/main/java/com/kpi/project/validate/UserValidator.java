@@ -6,6 +6,8 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -31,6 +33,22 @@ public class UserValidator {
         if (Objects.isNull(userRepository.findByIdIdentifier(userId))) {
             throw new ValidatorException(String.format("User with id : %s, not exists", userId));
         }
+    }
+
+    public void validateUserHavePermission(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        final Object principal = authentication.getPrincipal();
+        final Long idFromToken = ((User) principal).getId();
+        final Set<Role> roles = ((User) principal).getRoles();
+        final boolean isAdmin = roles.stream().anyMatch(foo -> foo.toString().equals("ADMIN") );
+
+        if (!isAdmin) {
+            if (!id.equals(idFromToken)) {
+                throw new ValidatorException("You do not have permission to change password");
+            }
+        }
+
     }
 
     public void validateUserPassword(UserDto userToValidate) {
