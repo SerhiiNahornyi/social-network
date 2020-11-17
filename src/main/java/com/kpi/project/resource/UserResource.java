@@ -29,4 +29,11 @@ public class UserResource {
 
         return ResponseEntity.ok(user);
     }
+
+    @PutMapping("/user/change/password")
+    public ResponseEntity<UserDto> changeUsersPassword(@RequestBody UserDto userDto) {
+        final UserDto user = userService.changeUserPassword(userDto);
+
+        return ResponseEntity.ok(user);
+    }
 }

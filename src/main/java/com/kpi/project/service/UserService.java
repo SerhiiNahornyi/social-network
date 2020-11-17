@@ -31,6 +31,18 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public UserDto changeUserPassword(UserDto userDto) throws UsernameNotFoundException {
+        final String password = userDto.getPassword();
+        userValidator.validatePassword(password, userDto.getMatchingPassword());
+        final Long userId = userDto.getId();
+        userValidator.validateUserExistence(userId);
+        userValidator.validateUserPermissions(userId);
+        final User updatedUser = userRepository.findByIdIdentifier(userId);
+        updatedUser.setPassword(passwordEncoder.encode(password));
+
+        return userMapper.userToDto(userRepository.save(updatedUser));
+    }
+
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
         userValidator.userRolesUpdateValidator(userDto.getId(), userDto.getRoles());
 
@@ -50,10 +62,12 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto saveUser(UserDto userDto) {
-        userValidator.validateUser(userDto);
+        final String userPassword = userDto.getPassword();
+        userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
+        userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
         final User user = userMapper.dtoToUser(userDto);
         user.setRoles(Collections.singleton(Role.USER));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userPassword));
 
         return userMapper.userToDto(userRepository.save(user));
     }
