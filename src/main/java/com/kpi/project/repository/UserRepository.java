@@ -12,11 +12,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.email = :loginParam or u.username = :loginParam")
     User loadByEmailOrUsername(@Param("loginParam") String loginParam);
 
+    User findByEmailOrUsername(String email, String username);
+
     User findByEmail(String email);
 
     User findByUsername(String username);
-
-    User findByEmailOrUsername(String email, String username);
 
     @Query("SELECT u FROM User u WHERE u.id = :idParam")
     User findByIdIdentifier(@Param("idParam") Long id);

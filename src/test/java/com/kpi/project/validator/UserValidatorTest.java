@@ -19,6 +19,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -149,7 +151,31 @@ public class UserValidatorTest {
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUserHavePermission(1L))
+                .isThrownBy(() -> testingInstance.validateUserPermissions(1L))
                 .withMessage("You do not have permission to change password");
+    }
+
+    @Test
+    public void validateUserHavePermissionShouldNotThrowException() {
+        // given
+        final User someUser = new User();
+        someUser.setId(1L);
+        someUser.setRoles(Collections.emptySet());
+        given(userRepository.findByUsername(any())).willReturn(someUser);
+
+        // expected
+        assertDoesNotThrow(() -> testingInstance.validateUserPermissions(1L));
+    }
+
+    @Test
+    public void validateUserExistenceShouldThrowExceptionUserIsNotExist() {
+        //given
+        user.setId(25L);
+        given(userRepository.findByIdIdentifier(any())).willReturn(null);
+
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUserExistence(user))
+                .withMessage("User with id : 25, not exists");
     }
 }

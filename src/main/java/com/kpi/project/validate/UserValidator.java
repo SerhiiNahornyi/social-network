@@ -35,8 +35,8 @@ public class UserValidator {
         }
     }
 
-    public void validateUserHavePermission(Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public void validateUserPermissions(Long id) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         final String userName = authentication != null ? authentication.getName() : null;
         final User userInContext = userRepository.findByUsername(userName);

@@ -34,12 +34,12 @@ public class UserService implements UserDetailsService {
     public UserDto changeUserPassword(UserDto userDto) throws UsernameNotFoundException {
         userValidator.validatePassword(userDto.getPassword(), userDto.getMatchingPassword());
         userValidator.validateUserExistence(userDto);
-        userValidator.validateUserHavePermission(userDto.getId());
-        final User userWithNewPassword = userRepository.findByIdIdentifier(userDto.getId());
-        final String newPassword = userDto.getMatchingPassword();
-        userWithNewPassword.setPassword(passwordEncoder.encode(newPassword));
+        userValidator.validateUserPermissions(userDto.getId());
+        final User updatedUser = userRepository.findByIdIdentifier(userDto.getId());
+        final String newPassword = userDto.getPassword();
+        updatedUser.setPassword(passwordEncoder.encode(newPassword));
 
-        return userMapper.userToDto(userRepository.save(userWithNewPassword));
+        return userMapper.userToDto(userRepository.save(updatedUser));
 
     }
 
