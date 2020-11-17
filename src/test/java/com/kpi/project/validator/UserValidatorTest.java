@@ -46,24 +46,17 @@ public class UserValidatorTest {
 
     @Test
     public void validateUserShouldThrowExceptionIfPasswordDoesNotMatch() {
-        // given
-        user.setPassword("");
-
         // expected
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> testingInstance.validatePassword(user.getPassword(), user.getMatchingPassword()))
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePassword("password","wrongPassword"))
                 .withMessage("Passwords does not match");
     }
 
     @Test
     public void validateUserShouldThrowExceptionIfPasswordHasIncorrectLength() {
-        // given
-        user.setPassword("pas");
-        user.setMatchingPassword("pas");
-
         // expected
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> testingInstance.validatePassword(user.getPassword(), user.getMatchingPassword()))
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePassword("pa","pa"))
                 .withMessage("Password length must be minimum of 4 symbols");
     }
 
@@ -73,7 +66,7 @@ public class UserValidatorTest {
         user.setEmail("");
 
         // expected
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(user))
                 .withMessage("Email should be present");
     }
@@ -84,7 +77,7 @@ public class UserValidatorTest {
         user.setUsername("");
 
         // expected
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(user))
                 .withMessage("Username should be present");
     }
@@ -99,7 +92,7 @@ public class UserValidatorTest {
         given(userRepository.findByUsername("username")).willReturn(null);
 
         // expected
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(user))
                 .withMessage("Email already exists");
     }
@@ -114,7 +107,7 @@ public class UserValidatorTest {
         given(userRepository.findByUsername("username")).willReturn(userModel);
 
         // expected
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(user))
                 .withMessage("Username already exists");
     }
