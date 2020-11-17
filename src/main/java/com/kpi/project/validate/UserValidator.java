@@ -56,7 +56,7 @@ public class UserValidator {
         }
     }
 
-    public void validatePassword(String password, String matchingPassword){
+    public void validatePassword(String password, String matchingPassword) {
         if (!Objects.equals(password, matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
         }
@@ -75,10 +75,10 @@ public class UserValidator {
 
         final User userByEmail = userRepository.findByEmail(userToValidate.getEmail());
         final User userByUsername = userRepository.findByUsername(userToValidate.getUsername());
-        if(Objects.nonNull(userByEmail)){
-                throw new ValidatorException("Email already exists");
+        if (Objects.nonNull(userByEmail)) {
+            throw new ValidatorException("Email already exists");
         }
-        if(Objects.nonNull(userByUsername)){
+        if (Objects.nonNull(userByUsername)) {
             throw new ValidatorException("Username already exists");
         }
     }
