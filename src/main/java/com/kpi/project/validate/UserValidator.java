@@ -1,11 +1,12 @@
 package com.kpi.project.validate;
 
 import com.kpi.project.model.User;
-import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -33,24 +34,47 @@ public class UserValidator {
         }
     }
 
-    public void validateUser(UserDto userToValidate) {
-        if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {
+    public void validateUserPermissions(Long id) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        final String userName = authentication != null ? authentication.getName() : null;
+        final User userInContext = userRepository.findByUsername(userName);
+        final boolean isAdmin = userInContext.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
+
+        if (!isAdmin && !id.equals(userInContext.getId())) {
+            throw new ValidatorException("You do not have permission to change password");
+        }
+    }
+
+    public void validateUserExistence(Long id) {
+        if (Objects.isNull(userRepository.findByIdIdentifier(id))) {
+            throw new ValidatorException(String.format("User with id : %s, not exists", id));
+        }
+    }
+
+    public void validatePassword(String password, String matchingPassword) {
+        if (!Objects.equals(password, matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
         }
-        if (userToValidate.getPassword().length() < 4) {
+        if (password.length() < 4) {
             throw new ValidatorException("Password length must be minimum of 4 symbols");
         }
-        if (StringUtils.isBlank(userToValidate.getEmail())) {
+    }
+
+    public void validateUser(String userEmail, String userName) {
+        if (StringUtils.isBlank(userEmail)) {
             throw new ValidatorException("Email should be present");
         }
-        if (StringUtils.isBlank(userToValidate.getUsername())) {
+        if (StringUtils.isBlank(userName)) {
             throw new ValidatorException("Username should be present");
         }
-        final User user = userRepository.findByEmailOrUsername(userToValidate.getEmail(), userToValidate.getUsername());
-        if (Objects.nonNull(user)) {
-            if (Objects.equals(user.getEmail(), userToValidate.getEmail())) {
-                throw new ValidatorException("Email already exists");
-            }
+
+        final User userByEmail = userRepository.findByEmail(userEmail);
+        final User userByUsername = userRepository.findByUsername(userName);
+        if (Objects.nonNull(userByEmail)) {
+            throw new ValidatorException("Email already exists");
+        }
+        if (Objects.nonNull(userByUsername)) {
             throw new ValidatorException("Username already exists");
         }
     }
