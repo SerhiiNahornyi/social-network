@@ -41,7 +41,7 @@ public class UserValidator {
         final Object principal = authentication.getPrincipal();
         final Long idFromToken = ((User) principal).getId();
         final Set<Role> roles = ((User) principal).getRoles();
-        final boolean isAdmin = roles.stream().anyMatch(foo -> foo.toString().equals("ADMIN") );
+        final boolean isAdmin = roles.stream().anyMatch(foo -> foo.toString().equals("ADMIN"));
 
         if (!isAdmin) {
             if (!id.equals(idFromToken)) {
