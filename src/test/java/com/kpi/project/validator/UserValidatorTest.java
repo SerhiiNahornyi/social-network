@@ -163,12 +163,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserExistenceShouldThrowExceptionUserIsNotExist() {
         //given
-        user.setId(25L);
         given(userRepository.findByIdIdentifier(any())).willReturn(null);
 
         //expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUserExistence(user))
+                .isThrownBy(() -> testingInstance.validateUserExistence(25L))
                 .withMessage("User with id : 25, not exists");
     }
 }

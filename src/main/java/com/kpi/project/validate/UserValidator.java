@@ -42,17 +42,14 @@ public class UserValidator {
         final User userInContext = userRepository.findByUsername(userName);
         final boolean isAdmin = userInContext.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
 
-        if (!isAdmin) {
-            if (!id.equals(userInContext.getId())) {
-                throw new ValidatorException("You do not have permission to change password");
-            }
+        if (!isAdmin && !id.equals(userInContext.getId())) {
+            throw new ValidatorException("You do not have permission to change password");
         }
-
     }
 
-    public void validateUserExistence(UserDto userToValidate) {
-        if (Objects.isNull(userRepository.findByIdIdentifier(userToValidate.getId()))) {
-            throw new ValidatorException(String.format("User with id : %s, not exists", userToValidate.getId()));
+    public void validateUserExistence(Long id) {
+        if (Objects.isNull(userRepository.findByIdIdentifier(id))) {
+            throw new ValidatorException(String.format("User with id : %s, not exists", id));
         }
     }
 
