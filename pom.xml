@@ -133,15 +133,12 @@
                 <version>${surefire.plugin.version}</version>
             </plugin>
 
-
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <!-- NB! Set <version> to the latest released version of    frontend-maven-plugin, like in README.md -->
                 <version>1.10.3</version>
                 <configuration>
                     <workingDirectory>client-web</workingDirectory>
-
                 </configuration>
                 <executions>
 
@@ -161,7 +158,6 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
-                        <!-- Optional configuration which provides for running any npm command -->
                         <configuration>
                             <arguments>install</arguments>
                         </configuration>
