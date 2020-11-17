@@ -36,15 +36,13 @@ public class User implements UserDetails {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "EMAIL", unique = true)
-    @NonNull
+    @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "USERNAME", unique = true)
-    @NonNull
+    @Column(name = "USERNAME", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)

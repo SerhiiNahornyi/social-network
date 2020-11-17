@@ -38,38 +38,34 @@ public class UserValidator {
     public void validateUserHavePermission(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        final Object principal = authentication.getPrincipal();
-        final Long idFromToken = ((User) principal).getId();
-        final Set<Role> roles = ((User) principal).getRoles();
-        final boolean isAdmin = roles.stream().anyMatch(foo -> foo.toString().equals("ADMIN"));
+        final String userName = authentication != null ? authentication.getName() : null;
+        final User userInContext = userRepository.findByUsername(userName);
+        final boolean isAdmin = userInContext.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
 
         if (!isAdmin) {
-            if (!id.equals(idFromToken)) {
+            if (!id.equals(userInContext.getId())) {
                 throw new ValidatorException("You do not have permission to change password");
             }
         }
 
     }
 
-    public void validateUserPassword(UserDto userToValidate) {
-        if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {
-            throw new ValidatorException("Passwords does not match");
-        }
-        if (userToValidate.getPassword().length() < 4) {
-            throw new ValidatorException("Password length must be minimum of 4 symbols");
-        }
+    public void validateUserExistence(UserDto userToValidate) {
         if (Objects.isNull(userRepository.findByIdIdentifier(userToValidate.getId()))) {
             throw new ValidatorException(String.format("User with id : %s, not exists", userToValidate.getId()));
         }
     }
 
-    public void validateUser(UserDto userToValidate) {
-        if (!Objects.equals(userToValidate.getPassword(), userToValidate.getMatchingPassword())) {
+    public void validatePassword(String password, String matchingPassword){
+        if (!Objects.equals(password, matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
         }
-        if (userToValidate.getPassword().length() < 4) {
+        if (password.length() < 4) {
             throw new ValidatorException("Password length must be minimum of 4 symbols");
         }
+    }
+
+    public void validateUser(UserDto userToValidate) {
         if (StringUtils.isBlank(userToValidate.getEmail())) {
             throw new ValidatorException("Email should be present");
         }
@@ -77,12 +73,12 @@ public class UserValidator {
             throw new ValidatorException("Username should be present");
         }
 
-        final User userByEmail = userRepository.loadUserByEmail(userToValidate.getEmail());
-        final User userByUsername = userRepository.loadUserByUsername(userToValidate.getUsername());
-        if (Objects.nonNull(userByEmail) && Objects.nonNull(userByUsername)) {
-            if (Objects.equals(userByEmail.getEmail(), userToValidate.getEmail())) {
+        final User userByEmail = userRepository.findByEmail(userToValidate.getEmail());
+        final User userByUsername = userRepository.findByUsername(userToValidate.getUsername());
+        if(Objects.nonNull(userByEmail)){
                 throw new ValidatorException("Email already exists");
-            }
+        }
+        if(Objects.nonNull(userByUsername)){
             throw new ValidatorException("Username already exists");
         }
     }

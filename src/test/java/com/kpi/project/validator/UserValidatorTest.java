@@ -13,11 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +49,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validatePassword(user.getPassword(), user.getMatchingPassword()))
                 .withMessage("Passwords does not match");
     }
 
@@ -59,7 +61,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> testingInstance.validateUser(user))
+                .isThrownBy(() -> testingInstance.validatePassword(user.getPassword(), user.getMatchingPassword()))
                 .withMessage("Password length must be minimum of 4 symbols");
     }
 
@@ -91,8 +93,8 @@ public class UserValidatorTest {
         final User userModel = new User();
         userModel.setEmail("email@mail.com");
         userModel.setUsername("username2.0");
-        given(userRepository.loadUserByEmail("email@mail.com")).willReturn(userModel);
-        given(userRepository.loadUserByUsername("username")).willReturn(userModel);
+        given(userRepository.findByEmail("email@mail.com")).willReturn(userModel);
+        given(userRepository.findByUsername("username")).willReturn(null);
 
         // expected
         assertThatIllegalArgumentException()
@@ -106,8 +108,8 @@ public class UserValidatorTest {
         final User userModel = new User();
         userModel.setEmail("email2.0@mail.com");
         userModel.setUsername("username");
-        given(userRepository.loadUserByEmail("email@mail.com")).willReturn(userModel);
-        given(userRepository.loadUserByUsername("username")).willReturn(userModel);
+        given(userRepository.findByEmail("email@mail.com")).willReturn(null);
+        given(userRepository.findByUsername("username")).willReturn(userModel);
 
         // expected
         assertThatIllegalArgumentException()
@@ -135,5 +137,19 @@ public class UserValidatorTest {
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.userRolesUpdateValidator(1L, roles))
                 .withMessage("Not existing role: NOT_EXISTED_ROLE");
+    }
+
+    @Test
+    public void validateUserHavePermissionShouldThrowExceptionYouDoNotHavePermission() {
+        // given
+        final User someUser = new User();
+        someUser.setId(2L);
+        someUser.setRoles(Collections.emptySet());
+        given(userRepository.findByUsername(any())).willReturn(someUser);
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUserHavePermission(1L))
+                .withMessage("You do not have permission to change password");
     }
 }

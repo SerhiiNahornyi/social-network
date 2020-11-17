@@ -111,7 +111,6 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldReturnNewUsersPassword() {
         // given
-        final String newPassword = "$2a$10$6N4QR2Kd84lZMVMGwymAGOZiqUOb038bWkevWntobgX8DkhQt/dc6";
         userDto.setPassword("passwordChange");
         userDto.setMatchingPassword("passwordChange");
 

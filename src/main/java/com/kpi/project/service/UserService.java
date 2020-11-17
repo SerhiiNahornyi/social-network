@@ -5,7 +5,6 @@ import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.repository.UserRepository;
-import com.kpi.project.util.JwtUtil;
 import com.kpi.project.validate.UserValidator;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +24,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, UserValidator userValidator,
-                       UserMapper userMapper, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+                       UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.userMapper = userMapper;
@@ -33,7 +32,8 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto changeUserPassword(UserDto userDto) throws UsernameNotFoundException {
-        userValidator.validateUserPassword(userDto);
+        userValidator.validatePassword(userDto.getPassword(), userDto.getMatchingPassword());
+        userValidator.validateUserExistence(userDto);
         userValidator.validateUserHavePermission(userDto.getId());
         final User userWithNewPassword = userRepository.findByIdIdentifier(userDto.getId());
         final String newPassword = userDto.getMatchingPassword();
@@ -62,6 +62,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto saveUser(UserDto userDto) {
+        userValidator.validatePassword(userDto.getPassword(), userDto.getMatchingPassword());
         userValidator.validateUser(userDto);
         final User user = userMapper.dtoToUser(userDto);
         user.setRoles(Collections.singleton(Role.USER));
