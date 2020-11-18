@@ -64,10 +64,9 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailAlreadyExists() {
         // given
-        final User userModel = User.builder()
-                .email("email@mail.com")
-                .username("username2.0")
-                .build();
+        final User userModel = new User();
+        userModel.setEmail("email@mail.com");
+        userModel.setUsername("username2.0");
         given(userRepository.findByEmail("email@mail.com")).willReturn(userModel);
         given(userRepository.findByUsername("username")).willReturn(null);
 
@@ -80,10 +79,9 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
-        final User userModel = User.builder()
-                .email("email2.0@mail.com")
-                .username("username")
-                .build();
+        final User userModel = new User();
+        userModel.setEmail("email2.0@mail.com");
+        userModel.setUsername("username");
         given(userRepository.findByEmail("email@mail.com")).willReturn(null);
         given(userRepository.findByUsername("username")).willReturn(userModel);
 
@@ -118,10 +116,9 @@ public class UserValidatorTest {
     @Test
     public void validateUserHavePermissionShouldThrowExceptionYouDoNotHavePermission() {
         // given
-        final User someUser = User.builder()
-                .id(2L)
-                .roles(Collections.emptySet())
-                .build();
+        final User someUser = new User();
+        someUser.setId(2L);
+        someUser.setRoles(Collections.emptySet());
         given(userRepository.findByUsername(any())).willReturn(someUser);
 
         // expected
@@ -133,10 +130,9 @@ public class UserValidatorTest {
     @Test
     public void validateUserHavePermissionShouldNotThrowException() {
         // given
-        final User someUser = User.builder()
-                .id(1L)
-                .roles(Collections.emptySet())
-                .build();
+        final User someUser = new User();
+        someUser.setId(1L);
+        someUser.setRoles(Collections.emptySet());
         given(userRepository.findByUsername(any())).willReturn(someUser);
 
         // expected

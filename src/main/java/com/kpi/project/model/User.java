@@ -1,8 +1,9 @@
 package com.kpi.project.model;
 
 import com.kpi.project.model.enums.Role;
-import lombok.Builder;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,8 +23,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-@Builder(toBuilder = true)
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "USERS")
 public class User implements UserDetails {
@@ -31,21 +33,21 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
-    Long id;
+    private Long id;
 
     @Column(name = "EMAIL", unique = true, nullable = false)
-    String email;
+    private String email;
 
     @Column(name = "USERNAME", unique = true, nullable = false)
-    String username;
+    private String username;
 
     @Column(name = "PASSWORD", nullable = false)
-    String password;
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "USER_ROLES", joinColumns = @JoinColumn(name = "USER_ID"))
     @Enumerated(EnumType.STRING)
-    Set<Role> roles;
+    private Set<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -37,8 +37,6 @@ public class SystemResource {
         }
         final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(AuthenticationResponse.builder()
-                .token(jwt)
-                .build());
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

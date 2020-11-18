@@ -38,9 +38,7 @@ public class UserService implements UserDetailsService {
         userValidator.validateUserExistence(userId);
         userValidator.validateUserPermissions(userId);
         User updatedUser = userRepository.findByIdIdentifier(userId);
-        updatedUser = updatedUser.toBuilder()
-                .password(passwordEncoder.encode(password))
-                .build();
+        updatedUser.setPassword(passwordEncoder.encode(password));
 
         return userMapper.userToDto(userRepository.save(updatedUser));
     }
@@ -52,7 +50,7 @@ public class UserService implements UserDetailsService {
         final Set<Role> newRoles = userDto.getRoles().stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
-        userWithNewRoles = userWithNewRoles.toBuilder().roles(newRoles).build();
+        userWithNewRoles.setRoles(newRoles);
 
         return userMapper.userToDto(userRepository.save(userWithNewRoles));
     }
@@ -68,10 +66,8 @@ public class UserService implements UserDetailsService {
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
         userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
         User user = userMapper.dtoToUser(userDto);
-        user = user.toBuilder()
-                .password(passwordEncoder.encode(userPassword))
-                .roles(Collections.singleton(Role.USER))
-                .build();
+        user.setPassword(passwordEncoder.encode(userPassword));
+        user.setRoles(Collections.singleton(Role.USER));
 
         return userMapper.userToDto(userRepository.save(user));
     }
