@@ -1,9 +1,11 @@
 package com.kpi.project.model;
 
 import com.kpi.project.model.enums.ErrorTypes;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
+@Builder(toBuilder = true)
+@Value
 public class ErrorResponse {
 
     ErrorTypes errorType;

@@ -49,8 +49,21 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User(1L, "mail@mail.com", "username",
-                "password", Collections.singleton(Role.ADMIN));
+        user = User.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .password("password")
+                .roles(Collections.singleton(Role.USER))
+                .build();
+
+        userDto = UserDto.builder()
+                .password("password")
+                .matchingPassword("password")
+                .username("username")
+                .email("mail@mail.com")
+                .id(1L)
+                .build();
     }
 
     @Test
@@ -69,14 +82,7 @@ public class UserServiceTest {
     @Test
     public void saveUserShouldReturnSavedUser() {
         // given
-        userDto = UserDto.builder()
-                .password("password")
-                .matchingPassword("password")
-                .username("username")
-                .email("mail@mail.com")
-                .id(1L)
-                .build();
-
+        user = user.toBuilder().password("hashedPassword").build();
         given(userMapper.dtoToUser(userDto)).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.save(user)).willReturn(user);
@@ -97,15 +103,7 @@ public class UserServiceTest {
         // given
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
-        userDto = UserDto.builder()
-                .password("password")
-                .matchingPassword("password")
-                .username("username")
-                .email("mail@mail.com")
-                .id(1L)
-                .roles(updatedRoles)
-                .build();
-
+        userDto = userDto.toBuilder().roles(updatedRoles).build();
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
@@ -123,13 +121,7 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldUpdateUsersPassword() {
         // given
-        userDto = UserDto.builder()
-                .password("passwordChange")
-                .matchingPassword("passwordChange")
-                .username("username")
-                .email("mail@mail.com")
-                .id(1L)
-                .build();
+        userDto = userDto.toBuilder().password("passwordChange").build();
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);

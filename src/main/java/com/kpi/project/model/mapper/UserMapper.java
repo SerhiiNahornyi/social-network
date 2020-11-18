@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     public User dtoToUser(UserDto userDto) {
-        final User user = new User();
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setUsername(userDto.getUsername());
 
-        return user;
+        return User.builder()
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
+                .username(userDto.getUsername())
+                .build();
     }
 
     public UserDto userToDto(User user) {
@@ -24,13 +24,11 @@ public class UserMapper {
                 .map(Enum::toString)
                 .collect(Collectors.toSet());
 
-        final UserDto userDto = UserDto.builder()
+        return UserDto.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .username(user.getUsername())
                 .roles(newRoles)
                 .build();
-
-        return userDto;
     }
 }
