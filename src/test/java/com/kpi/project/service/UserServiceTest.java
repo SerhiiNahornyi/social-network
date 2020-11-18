@@ -51,12 +51,6 @@ public class UserServiceTest {
     public void setUp() {
         user = new User(1L, "mail@mail.com", "username",
                 "password", Collections.singleton(Role.ADMIN));
-        userDto = new UserDto();
-        userDto.setPassword("password");
-        userDto.setMatchingPassword("password");
-        userDto.setUsername("username");
-        userDto.setEmail("mail@mail.com");
-        userDto.setId(1L);
     }
 
     @Test
@@ -75,6 +69,14 @@ public class UserServiceTest {
     @Test
     public void saveUserShouldReturnSavedUser() {
         // given
+        userDto = UserDto.builder()
+                .password("password")
+                .matchingPassword("password")
+                .username("username")
+                .email("mail@mail.com")
+                .id(1L)
+                .build();
+
         given(userMapper.dtoToUser(userDto)).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.save(user)).willReturn(user);
@@ -95,7 +97,15 @@ public class UserServiceTest {
         // given
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
-        userDto.setRoles(updatedRoles);
+        userDto = UserDto.builder()
+                .password("password")
+                .matchingPassword("password")
+                .username("username")
+                .email("mail@mail.com")
+                .id(1L)
+                .roles(updatedRoles)
+                .build();
+
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
@@ -113,7 +123,13 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldUpdateUsersPassword() {
         // given
-        userDto.setPassword("passwordChange");
+        userDto = UserDto.builder()
+                .password("passwordChange")
+                .matchingPassword("passwordChange")
+                .username("username")
+                .email("mail@mail.com")
+                .id(1L)
+                .build();
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);

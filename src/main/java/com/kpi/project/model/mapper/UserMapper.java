@@ -20,15 +20,16 @@ public class UserMapper {
     }
 
     public UserDto userToDto(User user) {
-        final UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setUsername(user.getUsername());
-
         final Set<String> newRoles = user.getRoles().stream()
                 .map(Enum::toString)
                 .collect(Collectors.toSet());
-        userDto.setRoles(newRoles);
+
+        final UserDto userDto = UserDto.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .username(user.getUsername())
+                .roles(newRoles)
+                .build();
 
         return userDto;
     }

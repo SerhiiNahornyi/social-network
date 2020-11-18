@@ -1,11 +1,14 @@
 package com.kpi.project.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Singular;
+import lombok.Value;
 
 import java.util.Set;
 
-@Data
+@Value
+@Builder(toBuilder = true)
 public class UserDto {
 
     private Long id;
@@ -19,6 +22,7 @@ public class UserDto {
 
     private String matchingPassword;
 
+    @Singular
     private Set<String> roles;
 
 }
