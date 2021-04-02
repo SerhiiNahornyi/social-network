@@ -16,7 +16,6 @@ public class ErrorsResource extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ValidatorException.class})
     protected ResponseEntity<Object> handleValidationExceptions(ValidatorException ex, WebRequest request) {
-
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorType(ErrorTypes.validation_error)
                 .message(ex.getMessage())
@@ -27,7 +26,6 @@ public class ErrorsResource extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     protected ResponseEntity<Object> handleUncaughtException(Exception ex, WebRequest request) {
-
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorType(ErrorTypes.server_error)
                 .message(ex.getMessage())

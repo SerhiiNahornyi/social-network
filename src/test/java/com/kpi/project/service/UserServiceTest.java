@@ -58,8 +58,8 @@ public class UserServiceTest {
 
         userDto = new UserDto();
         userDto.setEmail("mail@mail.com");
-        userDto.setMatchingPassword("password");
         userDto.setUsername("username");
+        userDto.setMatchingPassword("password");
         userDto.setPassword("password");
         userDto.setId(1L);
     }

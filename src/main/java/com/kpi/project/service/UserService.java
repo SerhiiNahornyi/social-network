@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
         final Long userId = userDto.getId();
         userValidator.validateUserExistence(userId);
         userValidator.validateUserPermissions(userId);
-        User updatedUser = userRepository.findByIdIdentifier(userId);
+        final User updatedUser = userRepository.findByIdIdentifier(userId);
         updatedUser.setPassword(passwordEncoder.encode(password));
 
         return userMapper.userToDto(userRepository.save(updatedUser));
@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
         userValidator.userRolesUpdateValidator(userDto.getId(), userDto.getRoles());
 
-        User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId());
+        final User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId());
         final Set<Role> newRoles = userDto.getRoles().stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
         final String userPassword = userDto.getPassword();
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
         userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
-        User user = userMapper.dtoToUser(userDto);
+        final User user = userMapper.dtoToUser(userDto);
         user.setPassword(passwordEncoder.encode(userPassword));
         user.setRoles(Collections.singleton(Role.USER));
 
