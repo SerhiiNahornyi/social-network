@@ -37,8 +37,10 @@ public class UserService implements UserDetailsService {
         final Long userId = userDto.getId();
         userValidator.validateUserExistence(userId);
         userValidator.validateUserPermissions(userId);
-        final User updatedUser = userRepository.findByIdIdentifier(userId);
-        updatedUser.setPassword(passwordEncoder.encode(password));
+        User updatedUser = userRepository.findByIdIdentifier(userId);
+        updatedUser = updatedUser.toBuilder()
+                .password(passwordEncoder.encode(password))
+                .build();
 
         return userMapper.userToDto(userRepository.save(updatedUser));
     }
@@ -46,18 +48,19 @@ public class UserService implements UserDetailsService {
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
         userValidator.userRolesUpdateValidator(userDto.getId(), userDto.getRoles());
 
-        final User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId());
+        User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId());
         final Set<Role> newRoles = userDto.getRoles().stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
-        userWithNewRoles.setRoles(newRoles);
+        userWithNewRoles = userWithNewRoles.toBuilder()
+                .roles(newRoles)
+                .build();
 
         return userMapper.userToDto(userRepository.save(userWithNewRoles));
     }
 
     @Override
     public User loadUserByUsername(String login) throws UsernameNotFoundException {
-
         return userRepository.loadByEmailOrUsername(login);
     }
 
@@ -66,9 +69,11 @@ public class UserService implements UserDetailsService {
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
         userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
         final User user = userMapper.dtoToUser(userDto);
-        user.setPassword(passwordEncoder.encode(userPassword));
-        user.setRoles(Collections.singleton(Role.USER));
+        User upUser = user.toBuilder()
+                .password(passwordEncoder.encode(userPassword))
+                .roles(Collections.singleton(Role.USER))
+                .build();
 
-        return userMapper.userToDto(userRepository.save(user));
+        return userMapper.userToDto(userRepository.save(upUser));
     }
 }

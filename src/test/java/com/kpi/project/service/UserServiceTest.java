@@ -49,19 +49,21 @@ public class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setEmail("mail@mail.com");
-        user.setUsername("username");
-        user.setPassword("password");
-        user.setRoles(Collections.singleton(Role.USER));
+        user = User.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .password("password")
+                .roles(Collections.singleton(Role.USER))
+                .build();
 
-        userDto = new UserDto();
-        userDto.setEmail("mail@mail.com");
-        userDto.setUsername("username");
-        userDto.setMatchingPassword("password");
-        userDto.setPassword("password");
-        userDto.setId(1L);
+        userDto = UserDto.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .password("password")
+                .matchingPassword("password")
+                .build();
     }
 
     @Test
@@ -80,10 +82,12 @@ public class UserServiceTest {
     @Test
     public void saveUserShouldReturnSavedUser() {
         // given
-        user.setPassword("hashedPassword");
-        given(userMapper.dtoToUser(userDto)).willReturn(user);
-        given(userMapper.userToDto(user)).willReturn(userDto);
-        given(userRepository.save(user)).willReturn(user);
+        final User newUser = user.toBuilder()
+                .password("hashedPassword")
+                .build();
+        given(userMapper.dtoToUser(userDto)).willReturn(newUser);
+        given(userMapper.userToDto(any(User.class))).willReturn(userDto);
+        given(userRepository.save(any(User.class))).willReturn(newUser);
         given(passwordEncoder.encode("password")).willReturn("hashedPassword");
 
         // when
@@ -91,8 +95,8 @@ public class UserServiceTest {
 
         // then
         verify(userMapper).dtoToUser(userDto);
-        verify(userMapper).userToDto(user);
-        verify(userRepository).save(user);
+        verify(userMapper).userToDto(newUser);
+        verify(userRepository).save(any(User.class));
         assertThat(actualUser).isEqualTo(userDto);
     }
 
@@ -101,7 +105,9 @@ public class UserServiceTest {
         // given
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
-        userDto.setRoles(updatedRoles);
+        userDto = userDto.toBuilder()
+                .roles(updatedRoles)
+                .build();
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
@@ -119,7 +125,9 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldUpdateUsersPassword() {
         // given
-        userDto.setPassword("passwordChange");
+        userDto = userDto.toBuilder()
+                .password("passwordChange")
+                .build();
         given(userRepository.save(any())).willReturn(user);
         given(userMapper.userToDto(user)).willReturn(userDto);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);

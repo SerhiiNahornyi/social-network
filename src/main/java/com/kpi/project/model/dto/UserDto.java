@@ -1,24 +1,26 @@
 package com.kpi.project.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Value;
 
 import java.util.Set;
 
-@Data
+@Value
+@Builder(toBuilder = true)
 public class UserDto {
 
-    private Long id;
+    Long id;
 
-    private String username;
+    String username;
 
-    private String email;
+    String email;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
+    String password;
 
-    private String matchingPassword;
+    String matchingPassword;
 
-    private Set<String> roles;
+    Set<String> roles;
 
 }
