@@ -15,13 +15,10 @@ public interface UserMapper {
 
     User dtoToUser(UserDto userDto);
 
-    @Mapping(source = "roles", target = "roles", qualifiedByName = "roles")
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
     UserDto userToDto(User user);
 
-    @Named("roles")
-    default Set<String> mapRoles(Set<Role> roles) {
-        return roles.stream()
-                .map(Enum::toString)
-                .collect(Collectors.toSet());
-    }
+
 }
