@@ -116,7 +116,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserHavePermissionShouldThrowExceptionYouDoNotHavePermission() {
+    public void validateUserHavePermissionShouldThrowExceptionWhenUserIsNotAdmin() {
         // given
         final User someUser = User.builder()
                 .id(2L)

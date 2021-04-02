@@ -47,12 +47,10 @@ public class UserService implements UserDetailsService {
 
     public UserDto updateUserRoles(UserDto userDto) throws UsernameNotFoundException {
         userValidator.userRolesUpdateValidator(userDto.getId(), userDto.getRoles());
-
-        User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId());
         final Set<Role> newRoles = userDto.getRoles().stream()
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());
-        userWithNewRoles = userWithNewRoles.toBuilder()
+        final User userWithNewRoles = userRepository.findByIdIdentifier(userDto.getId()).toBuilder()
                 .roles(newRoles)
                 .build();
 
@@ -68,12 +66,11 @@ public class UserService implements UserDetailsService {
         final String userPassword = userDto.getPassword();
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
         userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
-        final User user = userMapper.dtoToUser(userDto);
-        User upUser = user.toBuilder()
+        final User user = userMapper.dtoToUser(userDto).toBuilder()
                 .password(passwordEncoder.encode(userPassword))
                 .roles(Collections.singleton(Role.USER))
                 .build();
 
-        return userMapper.userToDto(userRepository.save(upUser));
+        return userMapper.userToDto(userRepository.save(user));
     }
 }

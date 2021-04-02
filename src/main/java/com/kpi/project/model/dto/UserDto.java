@@ -1,6 +1,5 @@
 package com.kpi.project.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 
@@ -16,7 +15,7 @@ public class UserDto {
 
     String email;
 
-    private String password;
+    String password;
 
     String matchingPassword;
 
