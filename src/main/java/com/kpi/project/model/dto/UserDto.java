@@ -16,8 +16,7 @@ public class UserDto {
 
     String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    String password;
+    private String password;
 
     String matchingPassword;
 
