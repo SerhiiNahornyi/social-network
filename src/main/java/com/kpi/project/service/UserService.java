@@ -37,8 +37,7 @@ public class UserService implements UserDetailsService {
         final Long userId = userDto.getId();
         userValidator.validateUserExistence(userId);
         userValidator.validateUserPermissions(userId);
-        User updatedUser = userRepository.findByIdIdentifier(userId);
-        updatedUser = updatedUser.toBuilder()
+        final User updatedUser = userRepository.findByIdIdentifier(userId).toBuilder()
                 .password(passwordEncoder.encode(password))
                 .build();
 
