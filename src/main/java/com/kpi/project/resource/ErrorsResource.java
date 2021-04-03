@@ -16,20 +16,20 @@ public class ErrorsResource extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ValidatorException.class})
     protected ResponseEntity<Object> handleValidationExceptions(ValidatorException ex, WebRequest request) {
-
-        final ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setErrorType(ErrorTypes.validation_error);
-        errorResponse.setMessage(ex.getMessage());
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .errorType(ErrorTypes.validation_error)
+                .message(ex.getMessage())
+                .build();
 
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(value = {Exception.class})
     protected ResponseEntity<Object> handleUncaughtException(Exception ex, WebRequest request) {
-
-        final ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setErrorType(ErrorTypes.server_error);
-        errorResponse.setMessage(ex.getMessage());
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .errorType(ErrorTypes.server_error)
+                .message(ex.getMessage())
+                .build();
 
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
