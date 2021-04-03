@@ -17,9 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,64 +42,43 @@ public class UserServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    private User user;
-
-    private UserDto userDto;
-
     @InjectMocks
     private UserService testingInstance;
-
-    @BeforeEach
-    public void setUp() {
-        user = User.builder()
-                .id(1L)
-                .email("mail@mail.com")
-                .username("username")
-                .password("password")
-                .roles(Collections.singleton(Role.USER))
-                .build();
-
-        userDto = UserDto.builder()
-                .id(1L)
-                .email("mail@mail.com")
-                .username("username")
-                .password("password")
-                .matchingPassword("password")
-                .build();
-    }
 
     @Test
     public void loadUserByUsernameShouldReturnUserFoundByEmailOrUsername() {
         // given
-        given(userRepository.loadByEmailOrUsername("login")).willReturn(user);
+        final User givenUser = givenUser(identity());
+
+        given(userRepository.loadByEmailOrUsername("login")).willReturn(givenUser);
 
         // when
         final User actualUser = testingInstance.loadUserByUsername("login");
 
         // then
         verify(userRepository).loadByEmailOrUsername("login");
-        assertThat(actualUser).isEqualTo(user);
+        assertThat(actualUser).isEqualTo(givenUser);
     }
 
     @Test
     public void saveUserShouldReturnSavedUser() {
         // given
-        final User newUser = user.toBuilder()
-                .password("hashedPassword")
-                .build();
-        given(userMapper.dtoToUser(userDto)).willReturn(newUser);
-        given(userMapper.userToDto(any(User.class))).willReturn(userDto);
-        given(userRepository.save(any(User.class))).willReturn(newUser);
+        final User givenUser = givenUser(userBuilder -> userBuilder.password("hashedPassword"));
+        final UserDto givenUserDto = givenUserDto(identity());
+
+        given(userMapper.dtoToUser(givenUserDto)).willReturn(givenUser);
+        given(userMapper.userToDto(any(User.class))).willReturn(givenUserDto);
+        given(userRepository.save(any(User.class))).willReturn(givenUser);
         given(passwordEncoder.encode("password")).willReturn("hashedPassword");
 
         // when
-        final UserDto actualUser = testingInstance.saveUser(userDto);
+        final UserDto actualUser = testingInstance.saveUser(givenUserDto);
 
         // then
-        verify(userMapper).dtoToUser(userDto);
-        verify(userMapper).userToDto(newUser);
+        verify(userMapper).dtoToUser(givenUserDto);
+        verify(userMapper).userToDto(givenUser);
         verify(userRepository).save(any(User.class));
-        assertThat(actualUser).isEqualTo(userDto);
+        assertThat(actualUser).isEqualTo(givenUserDto);
     }
 
     @Test
@@ -105,15 +86,15 @@ public class UserServiceTest {
         // given
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
-        final UserDto givenUser = userDto.toBuilder()
-                .roles(updatedRoles)
-                .build();
-        given(userRepository.save(any())).willReturn(user);
-        given(userMapper.userToDto(user)).willReturn(givenUser);
-        given(userRepository.findByIdIdentifier(1L)).willReturn(user);
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.roles(updatedRoles));
+        final User givenUser = givenUser(identity());
+
+        given(userRepository.save(any())).willReturn(givenUser);
+        given(userMapper.userToDto(givenUser)).willReturn(givenUserDto);
+        given(userRepository.findByIdIdentifier(1L)).willReturn(givenUser);
 
         // when
-        final UserDto actualUser = testingInstance.updateUserRoles(givenUser);
+        final UserDto actualUser = testingInstance.updateUserRoles(givenUserDto);
 
         // then
         assertThat(actualUser)
@@ -125,20 +106,40 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldUpdateUsersPassword() {
         // given
-        final UserDto givenUser = userDto.toBuilder()
-                .password("passwordChange")
-                .build();
-        given(userRepository.save(any())).willReturn(user);
-        given(userMapper.userToDto(user)).willReturn(givenUser);
-        given(userRepository.findByIdIdentifier(1L)).willReturn(user);
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.password("passwordChange"));
+        final User givenUser = givenUser(identity());
+
+        given(userRepository.save(any())).willReturn(givenUser);
+        given(userMapper.userToDto(givenUser)).willReturn(givenUserDto);
+        given(userRepository.findByIdIdentifier(1L)).willReturn(givenUser);
 
         // when
-        final UserDto actualUser = testingInstance.changeUserPassword(givenUser);
+        final UserDto actualUser = testingInstance.changeUserPassword(givenUserDto);
 
         // then
         assertThat(actualUser)
                 .isNotNull()
                 .extracting(UserDto::getPassword)
                 .isEqualTo("passwordChange");
+    }
+
+    private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
+        return userCustomizer.apply(User.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .password("password")
+                .roles(Collections.singleton(Role.USER)))
+                .build();
+    }
+
+    private static UserDto givenUserDto(Function<UserDto.UserDtoBuilder, UserDto.UserDtoBuilder> userDtoCustomizer) {
+        return userDtoCustomizer.apply(UserDto.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .password("password")
+                .matchingPassword("password"))
+                .build();
     }
 }

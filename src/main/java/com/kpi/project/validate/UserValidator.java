@@ -38,10 +38,10 @@ public class UserValidator {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         final String userName = authentication != null ? authentication.getName() : null;
-        final User userInContext = userRepository.findByUsername(userName);
-        final boolean isAdmin = userInContext.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
+        final User userFromContext = userRepository.findByUsername(userName);
+        final boolean isAdmin = userFromContext.getRoles().stream().anyMatch(role -> role == Role.ADMIN);
 
-        if (!isAdmin && !id.equals(userInContext.getId())) {
+        if (!isAdmin && !id.equals(userFromContext.getId())) {
             throw new ValidatorException("You do not have permission to change password");
         }
     }
