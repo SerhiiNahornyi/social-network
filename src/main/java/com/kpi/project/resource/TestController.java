@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
-
     @RequestMapping("test/string")
     public String test() {
         return "string.ok";
@@ -19,5 +18,10 @@ public class TestController {
     @RequestMapping("/test/error2")
     public Object exception() throws Exception {
         throw new Exception("some exception");
+    }
+
+    @RequestMapping("/test/secured")
+    public Object getSecured() throws Exception {
+        throw new Exception("secured point");
     }
 }
