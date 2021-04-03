@@ -105,15 +105,15 @@ public class UserServiceTest {
         // given
         final Set<String> updatedRoles = Stream.of("ADMIN", "USER")
                 .collect(Collectors.toCollection(HashSet::new));
-        final UserDto newUserDto = userDto.toBuilder()
+        final UserDto givenUser = userDto.toBuilder()
                 .roles(updatedRoles)
                 .build();
         given(userRepository.save(any())).willReturn(user);
-        given(userMapper.userToDto(user)).willReturn(newUserDto);
+        given(userMapper.userToDto(user)).willReturn(givenUser);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
 
         // when
-        final UserDto actualUser = testingInstance.updateUserRoles(newUserDto);
+        final UserDto actualUser = testingInstance.updateUserRoles(givenUser);
 
         // then
         assertThat(actualUser)
@@ -125,15 +125,15 @@ public class UserServiceTest {
     @Test
     public void changeUserPasswordShouldUpdateUsersPassword() {
         // given
-        final UserDto newUserDto = userDto.toBuilder()
+        final UserDto givenUser = userDto.toBuilder()
                 .password("passwordChange")
                 .build();
         given(userRepository.save(any())).willReturn(user);
-        given(userMapper.userToDto(user)).willReturn(newUserDto);
+        given(userMapper.userToDto(user)).willReturn(givenUser);
         given(userRepository.findByIdIdentifier(1L)).willReturn(user);
 
         // when
-        final UserDto actualUser = testingInstance.changeUserPassword(newUserDto);
+        final UserDto actualUser = testingInstance.changeUserPassword(givenUser);
 
         // then
         assertThat(actualUser)

@@ -64,11 +64,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailAlreadyExists() {
         // given
-        final User userModel = User.builder()
+        final User givenUser = User.builder()
                 .email("email@mail.com")
                 .username("username2.0")
                 .build();
-        given(userRepository.findByEmail("email@mail.com")).willReturn(userModel);
+        given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
         given(userRepository.findByUsername("username")).willReturn(null);
 
         // expected
@@ -80,12 +80,12 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
-        final User userModel = User.builder()
+        final User givenUser = User.builder()
                 .email("email2.0@mail.com")
                 .username("username")
                 .build();
         given(userRepository.findByEmail("email@mail.com")).willReturn(null);
-        given(userRepository.findByUsername("username")).willReturn(userModel);
+        given(userRepository.findByUsername("username")).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
@@ -118,11 +118,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserHavePermissionShouldThrowExceptionWhenUserIsNotAdmin() {
         // given
-        final User someUser = User.builder()
+        final User givenUser = User.builder()
                 .id(2L)
                 .roles(Collections.emptySet())
                 .build();
-        given(userRepository.findByUsername(any())).willReturn(someUser);
+        given(userRepository.findByUsername(any())).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
@@ -133,11 +133,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserHavePermissionShouldNotThrowException() {
         // given
-        final User someUser = User.builder()
+        final User givenUser = User.builder()
                 .id(1L)
                 .roles(Collections.emptySet())
                 .build();
-        given(userRepository.findByUsername(any())).willReturn(someUser);
+        given(userRepository.findByUsername(any())).willReturn(givenUser);
 
         // expected
         assertDoesNotThrow(() -> testingInstance.validateUserPermissions(1L));

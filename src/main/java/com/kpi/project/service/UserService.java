@@ -65,11 +65,11 @@ public class UserService implements UserDetailsService {
         final String userPassword = userDto.getPassword();
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
         userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
-        final User user = userMapper.dtoToUser(userDto).toBuilder()
+        final User userToSave = userMapper.dtoToUser(userDto).toBuilder()
                 .password(passwordEncoder.encode(userPassword))
                 .roles(Collections.singleton(Role.USER))
                 .build();
 
-        return userMapper.userToDto(userRepository.save(user));
+        return userMapper.userToDto(userRepository.save(userToSave));
     }
 }
