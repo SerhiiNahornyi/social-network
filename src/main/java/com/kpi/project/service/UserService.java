@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,20 @@ public class UserService implements UserDetailsService {
                 .build();
 
         return userMapper.userToDto(userRepository.save(userWithNewRoles));
+    }
+
+    public UserDto addUserFriend(String username, String friendName) throws UsernameNotFoundException {
+        userValidator.validateUserFriend(friendName);
+
+        final Set<User> friends = userRepository.findByUsername(username).getFriends();
+        final Set<User> updatedFriends = friends != null ? friends : new HashSet<>();
+        updatedFriends.add(userRepository.findByUsername(friendName));
+
+        final User userWithNewFriend = userRepository.findByUsername(username).toBuilder()
+                .friends(updatedFriends)
+                .build();
+
+        return userMapper.userToDto(userRepository.save(userWithNewFriend));
     }
 
     @Override

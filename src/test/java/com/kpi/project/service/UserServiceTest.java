@@ -6,7 +6,6 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -101,6 +100,26 @@ public class UserServiceTest {
                 .isNotNull()
                 .extracting(UserDto::getRoles)
                 .isEqualTo(updatedRoles);
+    }
+
+    @Test
+    public void addUserFriendShouldUpdateUsersFriends() {
+        // given
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friend("newFriend"));
+        final User givenUser = givenUser(identity());
+
+        given(userRepository.save(any())).willReturn(givenUser);
+        given(userMapper.userToDto(givenUser)).willReturn(givenUserDto);
+        given(userRepository.findByUsername(givenUserDto.getUsername())).willReturn(givenUser);
+
+        // when
+        final UserDto actualUser = testingInstance.addUserFriend(givenUserDto.getUsername(), "newFriend");
+
+        // then
+        assertThat(actualUser)
+                .isNotNull()
+                .extracting(UserDto::getFriend)
+                .isEqualTo("newFriend");
     }
 
     @Test

@@ -146,6 +146,17 @@ public class UserValidatorTest {
                 .withMessage("User with id : 25, not exists");
     }
 
+    @Test
+    public void validateUserFriendShouldThrowExceptionUserIsNotExist() {
+        //given
+        given(userRepository.findByUsername(any())).willReturn(null);
+
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUserFriend("username"))
+                .withMessage("User with username : username, not exists");
+    }
+
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
         return userCustomizer.apply(User.builder()
                 .id(1L)

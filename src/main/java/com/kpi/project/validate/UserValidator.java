@@ -52,6 +52,12 @@ public class UserValidator {
         }
     }
 
+    public void validateUserFriend(String username) {
+        if (Objects.isNull(userRepository.findByUsername(username))) {
+            throw new ValidatorException(String.format("User with username : %s, not exists", username));
+        }
+    }
+
     public void validatePassword(String password, String matchingPassword) {
         if (!Objects.equals(password, matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
