@@ -1,7 +1,6 @@
 package com.kpi.project.model.dto;
 
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.Set;
