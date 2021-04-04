@@ -3,9 +3,6 @@ package com.kpi.project.resource;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,12 +31,8 @@ public class UserResource {
     }
 
     @PutMapping("/user/add/friend")
-    public ResponseEntity<UserDto> addUserFriends(@RequestBody UserDto userDto) {
-        final SecurityContext context = SecurityContextHolder.getContext();
-        final Authentication authentication = context.getAuthentication();
-        final String username = authentication.getName();
-
-        final UserDto user = userService.addUserFriend(username, userDto.getFriend());
+    public ResponseEntity<UserDto> addUserFriends(@RequestBody String friendName) {
+        final UserDto user = userService.addUserFriend(friendName);
 
         return ResponseEntity.ok(user);
     }

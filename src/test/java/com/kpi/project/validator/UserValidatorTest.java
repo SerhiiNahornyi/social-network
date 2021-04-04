@@ -143,7 +143,7 @@ public class UserValidatorTest {
         //expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUserExistence(25L))
-                .withMessage("User with id : 25, not exists");
+                .withMessage("User with id: 25, not exists");
     }
 
     @Test
@@ -154,7 +154,7 @@ public class UserValidatorTest {
         //expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUserFriend("username"))
-                .withMessage("User with username : username, not exists");
+                .withMessage("User with username: username, not exists");
     }
 
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {

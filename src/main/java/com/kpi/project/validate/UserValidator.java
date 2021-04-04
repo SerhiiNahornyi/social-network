@@ -52,9 +52,9 @@ public class UserValidator {
         }
     }
 
-    public void validateUserFriend(String username) {
-        if (Objects.isNull(userRepository.findByUsername(username))) {
-            throw new ValidatorException(String.format("User with username : %s, not exists", username));
+    public void validateUserFriend(User friend, String friendName) {
+        if (Objects.isNull(friend)) {
+            throw new ValidatorException(String.format("User with username : %s, not exists", friendName));
         }
     }
 
