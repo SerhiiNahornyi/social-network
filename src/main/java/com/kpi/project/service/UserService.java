@@ -63,14 +63,15 @@ public class UserService implements UserDetailsService {
     public UserDto addUserFriend(String friendName) throws UsernameNotFoundException {
         final SecurityContext context = SecurityContextHolder.getContext();
         final Authentication authentication = context.getAuthentication();
-        final String username = authentication.getName();
-
+        final String username = authentication != null ? authentication.getName() : null;
         final User userFromToken = userRepository.findByUsername(username);
         final User userFriend = userRepository.findByUsername(friendName);
 
-        userValidator.validateUserFriend(userFriend, friendName);
+        userValidator.validateFriendToAdd(userFriend, friendName);
 
-        final Set<User> updatedFriends = userFromToken.getFriends() != null ? userFromToken.getFriends() : new HashSet<>();
+        final Set<User> updatedFriends = userFromToken.getFriends() != null
+                ? userFromToken.getFriends()
+                : new HashSet<>();
         updatedFriends.add(userFriend);
 
         final User userWithNewFriend = userRepository.findByUsername(username).toBuilder()

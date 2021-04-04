@@ -48,13 +48,13 @@ public class UserValidator {
 
     public void validateUserExistence(Long id) {
         if (Objects.isNull(userRepository.findByIdIdentifier(id))) {
-            throw new ValidatorException(String.format("User with id : %s, not exists", id));
+            throw new ValidatorException(String.format("User with id: %s, not exists", id));
         }
     }
 
-    public void validateUserFriend(User friend, String friendName) {
-        if (Objects.isNull(friend)) {
-            throw new ValidatorException(String.format("User with username : %s, not exists", friendName));
+    public void validateFriendToAdd(User friend, String friendName) {
+        if (friend == null) {
+            throw new ValidatorException(String.format("User with username: %s, not exists", friendName));
         }
     }
 

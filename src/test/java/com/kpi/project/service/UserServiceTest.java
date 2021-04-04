@@ -105,21 +105,21 @@ public class UserServiceTest {
     @Test
     public void addUserFriendShouldUpdateUsersFriends() {
         // given
-        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friend("newFriend"));
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friendNames(Collections.singleton(User.builder().username("newFriend").build())));
         final User givenUser = givenUser(identity());
 
         given(userRepository.save(any())).willReturn(givenUser);
         given(userMapper.userToDto(givenUser)).willReturn(givenUserDto);
-        given(userRepository.findByUsername(givenUserDto.getUsername())).willReturn(givenUser);
+        given(userRepository.findByUsername(any())).willReturn(givenUser);
 
         // when
-        final UserDto actualUser = testingInstance.addUserFriend(givenUserDto.getUsername(), "newFriend");
+        final UserDto actualUser = testingInstance.addUserFriend("newFriend");
 
         // then
         assertThat(actualUser)
                 .isNotNull()
-                .extracting(UserDto::getFriend)
-                .isEqualTo("newFriend");
+                .extracting(UserDto::toString)
+                .isNotNull();
     }
 
     @Test
