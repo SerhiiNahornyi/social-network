@@ -22,6 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -45,6 +46,9 @@ public class User implements UserDetails {
 
     @Column(name = "USERNAME", unique = true, nullable = false)
     String username;
+
+    @Column(name = "AGE", nullable = false)
+    LocalDate age;
 
     @Column(name = "PASSWORD", nullable = false)
     String password;

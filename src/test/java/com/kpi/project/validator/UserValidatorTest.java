@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,7 +52,7 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("", "username"))
+                .isThrownBy(() -> testingInstance.validateUser("", "username", LocalDate.of(2000, 1, 1)))
                 .withMessage("Email should be present");
     }
 
@@ -59,7 +60,7 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", ""))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "", LocalDate.of(2000, 1, 1)))
                 .withMessage("Username should be present");
     }
 
@@ -72,7 +73,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username"))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username", LocalDate.of(2000, 1, 1)))
                 .withMessage("Email already exists");
     }
 
@@ -85,7 +86,7 @@ public class UserValidatorTest {
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "existingUserName"))
+                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "existingUserName", LocalDate.of(2000, 1, 1)))
                 .withMessage("Username already exists");
     }
 

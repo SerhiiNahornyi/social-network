@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
@@ -61,12 +62,15 @@ public class UserValidator {
         }
     }
 
-    public void validateUser(String userEmail, String userName) {
+    public void validateUser(String userEmail, String userName, LocalDate age) {
         if (StringUtils.isBlank(userEmail)) {
             throw new ValidatorException("Email should be present");
         }
         if (StringUtils.isBlank(userName)) {
             throw new ValidatorException("Username should be present");
+        }
+        if (age.isAfter(LocalDate.now().minusYears(16))) {
+            throw new ValidatorException("insufficient age");
         }
 
         final User userByEmail = userRepository.findByEmail(userEmail);
