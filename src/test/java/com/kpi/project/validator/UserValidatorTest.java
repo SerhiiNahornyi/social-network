@@ -147,6 +147,15 @@ public class UserValidatorTest {
                 .withMessage("User with id : 25, not exists");
     }
 
+    @Test
+    public void validateUserAgeShouldThrowExceptionIfUserAgeIsUnderSixteen() {
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser("some@gmail.com", "user", LocalDate.of(2010, 1, 1)))
+                .withMessage("insufficient age");
+
+    }
+
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
         return userCustomizer.apply(User.builder()
                 .id(1L)
