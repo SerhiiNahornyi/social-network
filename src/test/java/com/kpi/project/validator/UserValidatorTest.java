@@ -39,7 +39,7 @@ public class UserValidatorTest {
     private UserValidator testingInstance;
 
     @Test
-    public void validateUserShouldThrowExceptionIfPasswordDoesNotMatch() {
+    public void validatePasswordShouldThrowExceptionIfPasswordDoesNotMatch() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validatePassword("password", "wrongPassword"))
@@ -47,7 +47,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserShouldThrowExceptionIfPasswordHasIncorrectLength() {
+    public void validatePasswordShouldThrowExceptionIfPasswordHasIncorrectLength() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validatePassword("pa", "pa"))
@@ -135,7 +135,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserHavePermissionShouldThrowExceptionWhenUserIsNotAdmin() {
+    public void validateUserPermissionShouldThrowExceptionWhenUserIsNotAdmin() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.id(2L).roles(Collections.emptySet()));
 
@@ -148,7 +148,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserHavePermissionShouldNotThrowException() {
+    public void validateUserPermissionShouldNotThrowException() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.roles(Collections.emptySet()));
 
@@ -178,7 +178,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserAgeShouldThrowExceptionIfUserAgeIsUnderSixteen() {
+    public void validateUserShouldThrowExceptionIfUserAgeIsUnderSixteen() {
         //given
         final UserDto givenUserDto = UserDto.builder()
                 .username("existingUserName")
@@ -193,7 +193,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void userAgeShouldBeOverSixteen() {
+    public void validateUserShouldNotThrowExceptionIfUserAgeOverSixteen() {
         //given
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
