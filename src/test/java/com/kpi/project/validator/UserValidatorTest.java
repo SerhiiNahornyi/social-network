@@ -7,12 +7,16 @@ import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import io.jsonwebtoken.lang.Assert;
+import javassist.NotFoundException;
+import org.assertj.core.api.NotThrownAssert;
+import org.hibernate.criterion.NotEmptyExpression;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.NotActiveException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +58,6 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
         // given
         final UserDto givenUserDto = UserDto.builder()
-                .email(null)
                 .build();
 
         // expected
@@ -67,7 +70,6 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
         // given
         final UserDto givenUserDto = UserDto.builder()
-                .username(null)
                 .email("same@same.com")
                 .build();
 
@@ -82,7 +84,7 @@ public class UserValidatorTest {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
         final UserDto givenUserDto = UserDto.builder()
-                .username("user")
+                .username("username")
                 .email("email@mail.com")
                 .build();
 
@@ -184,20 +186,24 @@ public class UserValidatorTest {
                 .email("same@same.com")
                 .dateOfBirth(LocalDate.now().minusYears(16))
                 .build();
+
         //expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
-                .withMessage("To register, the user must be over sixteen years old");
+                .withMessage("Age restriction of sixteen years");
     }
 
     @Test
-    public void validateUserAgeShouldThrowExceptionIfUserAgeIsOlderSixteen() {
+    public void validateUserAgeShouldUserAgeIsOlderSixteen() {
         //given
         final UserDto givenUserDto = UserDto.builder()
+                .username("userName")
+                .email("same@same.com")
                 .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
+
         //expected
-        assertTrue(givenUserDto.getDateOfBirth().isBefore(LocalDate.now().minusYears(16)));
+        assertDoesNotThrow(() -> testingInstance.validateUser(givenUserDto));
     }
 
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {

@@ -86,7 +86,7 @@ public class UserValidator {
             throw new ValidatorException("Username already exists");
         }
         if (!userDto.getDateOfBirth().isBefore(LocalDate.now().minusYears(16))) {
-            throw new ValidatorException("To register, the user must be over sixteen years old");
+            throw new ValidatorException("Age restriction of sixteen years");
         }
     }
 }
