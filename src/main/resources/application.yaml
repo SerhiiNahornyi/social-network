@@ -7,7 +7,7 @@ security:
 spring:
   datasource:
     password: root
-    url: jdbc:mysql://localhost:3306/KpiSocialNetwork
+    url: jdbc:mysql://localhost:3306/KpiSocialNetwork?serverTimezone=UTC
     username: root
   jpa:
     hibernate:
