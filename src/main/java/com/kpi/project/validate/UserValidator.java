@@ -3,6 +3,7 @@ package com.kpi.project.validate;
 import com.kpi.project.model.User;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
+import com.kpi.project.model.post.Post;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
@@ -55,6 +56,18 @@ public class UserValidator {
     public void validateFriendToAdd(User friend, String friendName) {
         if (friend == null) {
             throw new ValidatorException(String.format("User with username: %s, not exists", friendName));
+        }
+    }
+
+    public void validatePostToAdd(Post post) {
+        if (post.getComment().length() > 200) {
+            throw new ValidatorException("Comment length must be no more than 200 symbols");
+        }
+        if (post.getDescription().length() > 50) {
+            throw new ValidatorException("Description length must be no more than 50 symbols");
+        }
+        if (post.getAuthor() == null) {
+            throw new ValidatorException("The post must include the author");
         }
     }
 

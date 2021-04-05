@@ -1,6 +1,7 @@
 package com.kpi.project.model;
 
 import com.kpi.project.model.enums.Role;
+import com.kpi.project.model.post.Post;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,6 +58,10 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "USER_FRIENDS", joinColumns = @JoinColumn(name = "USER_ID"))
     Set<User> friends;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "USER_POSTS", joinColumns = @JoinColumn(name = "USER_ID"))
+    Set<Post> posts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
