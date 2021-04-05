@@ -1,6 +1,7 @@
 package com.kpi.project.validate;
 
 import com.kpi.project.model.User;
+import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
@@ -62,19 +63,19 @@ public class UserValidator {
         }
     }
 
-    public void validateUser(String userEmail, String userName, LocalDate age) {
-        if (StringUtils.isBlank(userEmail)) {
+    public void validateUser(UserDto userDto) {
+        if (StringUtils.isBlank(userDto.getEmail())) {
             throw new ValidatorException("Email should be present");
         }
-        if (StringUtils.isBlank(userName)) {
+        if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
-        if (age.isAfter(LocalDate.now().minusYears(16))) {
-            throw new ValidatorException("insufficient age");
+        if (userDto.getAge().isAfter(LocalDate.now().minusYears(16))) {
+            throw new ValidatorException("User must be over sixteen years old");
         }
 
-        final User userByEmail = userRepository.findByEmail(userEmail);
-        final User userByUsername = userRepository.findByUsername(userName);
+        final User userByEmail = userRepository.findByEmail(userDto.getEmail());
+        final User userByUsername = userRepository.findByUsername(userDto.getUsername());
         if (Objects.nonNull(userByEmail)) {
             throw new ValidatorException("Email already exists");
         }

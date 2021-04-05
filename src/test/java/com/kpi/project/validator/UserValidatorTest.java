@@ -1,6 +1,7 @@
 package com.kpi.project.validator;
 
 import com.kpi.project.model.User;
+import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
@@ -50,17 +51,23 @@ public class UserValidatorTest {
 
     @Test
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
+        // given
+        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.email(null));
+
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("", "username", LocalDate.of(2000, 1, 1)))
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
                 .withMessage("Email should be present");
     }
 
     @Test
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
+        // given
+        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.username(null));
+
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "", LocalDate.of(2000, 1, 1)))
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
                 .withMessage("Username should be present");
     }
 
@@ -68,12 +75,13 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfEmailAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
+        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.email("email@mail.com"));
 
         given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username", LocalDate.of(2000, 1, 1)))
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
                 .withMessage("Email already exists");
     }
 
@@ -81,12 +89,13 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.username("existingUserName"));
+        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.username("existingUserName"));
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "existingUserName", LocalDate.of(2000, 1, 1)))
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
                 .withMessage("Username already exists");
     }
 
@@ -149,11 +158,12 @@ public class UserValidatorTest {
 
     @Test
     public void validateUserAgeShouldThrowExceptionIfUserAgeIsUnderSixteen() {
+        //given
+        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.age(LocalDate.of(2010, 1, 1)));
         //expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("some@gmail.com", "user", LocalDate.of(2010, 1, 1)))
-                .withMessage("insufficient age");
-
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
+                .withMessage("User must be over sixteen years old");
     }
 
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
@@ -163,6 +173,17 @@ public class UserValidatorTest {
                 .username("username")
                 .password("password")
                 .roles(Collections.singleton(Role.USER)))
+                .build();
+    }
+
+    private static UserDto givenUserDto(Function<UserDto.UserDtoBuilder, UserDto.UserDtoBuilder> userDtoCustomizer) {
+        return userDtoCustomizer.apply(UserDto.builder()
+                .id(1L)
+                .email("mail@mail.com")
+                .username("username")
+                .age(LocalDate.of(2000, 1, 1))
+                .password("password")
+                .matchingPassword("password"))
                 .build();
     }
 }
