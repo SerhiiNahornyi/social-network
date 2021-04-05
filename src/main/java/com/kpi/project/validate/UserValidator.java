@@ -54,6 +54,12 @@ public class UserValidator {
         }
     }
 
+    public void validateFriendToAdd(User friend, String friendName) {
+        if (friend == null) {
+            throw new ValidatorException(String.format("User with username: %s, not exists", friendName));
+        }
+    }
+
     public void validatePassword(String password, String matchingPassword) {
         if (!Objects.equals(password, matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
@@ -78,9 +84,6 @@ public class UserValidator {
         }
         if (Objects.nonNull(userByUsername)) {
             throw new ValidatorException("Username already exists");
-        }
-        if (!userDto.getDayOfBirth().isAfter(LocalDate.now().minusYears(16))) {
-            throw new ValidatorException("User over 16");
         }
         if (userDto.getDayOfBirth().isAfter(LocalDate.now().minusYears(16))) {
             throw new ValidatorException("User must be over sixteen years old");

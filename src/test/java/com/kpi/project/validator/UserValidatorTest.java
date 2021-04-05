@@ -173,20 +173,6 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserAgeShouldThrowExceptionIfUserAgeIsUnderSixteen() {
-        //given
-        final UserDto userDto = UserDto.builder()
-                .username("existingUserName")
-                .email("same@same.com")
-                .dayOfBirth(LocalDate.now().minusYears(16))
-                .build();
-        //expected
-        assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser(userDto))
-                .withMessage("User over 16");
-    }
-
-    @Test
     public void validateUserAgeShouldThrowExceptionIfUserAgeIsOverSixteen() {
         //given
         final UserDto userDto = UserDto.builder()
