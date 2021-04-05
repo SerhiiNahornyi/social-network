@@ -60,11 +60,11 @@ public class UserValidator {
     }
 
     public void validatePostToAdd(Post post) {
-        if (post.getComment().length() > 200) {
-            throw new ValidatorException("Comment length must be no more than 200 symbols");
+        if (StringUtils.isBlank(post.getImageURL())) {
+            throw new ValidatorException("URL should be present");
         }
-        if (post.getDescription().length() > 50) {
-            throw new ValidatorException("Description length must be no more than 50 symbols");
+        if (StringUtils.isBlank(post.getDescription())) {
+            throw new ValidatorException("Description should be present");
         }
         if (post.getAuthor() == null) {
             throw new ValidatorException("The post must include the author");
