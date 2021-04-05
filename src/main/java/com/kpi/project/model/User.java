@@ -47,8 +47,8 @@ public class User implements UserDetails {
     @Column(name = "USERNAME", unique = true, nullable = false)
     String username;
 
-    @Column(name = "DAYOFBIRTH", nullable = false)
-    LocalDate dayOfBirth;
+    @Column(name = "DATE_OF_BIRTH", nullable = false)
+    LocalDate dateOfBirth;
 
     @Column(name = "PASSWORD", nullable = false)
     String password;
