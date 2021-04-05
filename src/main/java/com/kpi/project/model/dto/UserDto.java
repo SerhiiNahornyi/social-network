@@ -22,6 +22,6 @@ public class UserDto {
 
     Set<String> roles;
 
-    Set<User> friendNames;
+    Set<User> friends;
 
 }
