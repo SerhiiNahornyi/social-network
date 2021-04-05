@@ -1,5 +1,6 @@
 package com.kpi.project.model.dto;
 
+import com.kpi.project.model.User;
 import lombok.Builder;
 import lombok.Value;
 
@@ -20,5 +21,7 @@ public class UserDto {
     String matchingPassword;
 
     Set<String> roles;
+
+    Set<User> friends;
 
 }

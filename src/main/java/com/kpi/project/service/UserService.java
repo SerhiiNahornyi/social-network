@@ -6,12 +6,16 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +58,27 @@ public class UserService implements UserDetailsService {
                 .build();
 
         return userMapper.userToDto(userRepository.save(userWithNewRoles));
+    }
+
+    public UserDto addUserFriend(String friendName) throws UsernameNotFoundException {
+        final SecurityContext context = SecurityContextHolder.getContext();
+        final Authentication authentication = context.getAuthentication();
+        final String username = authentication != null ? authentication.getName() : null;
+        final User userFromToken = userRepository.findByUsername(username);
+        final User userFriend = userRepository.findByUsername(friendName);
+
+        userValidator.validateFriendToAdd(userFriend, friendName);
+
+        final Set<User> updatedFriends = userFromToken.getFriends() != null
+                ? userFromToken.getFriends()
+                : new HashSet<>();
+        updatedFriends.add(userFriend);
+
+        final User userWithNewFriend = userRepository.findByUsername(username).toBuilder()
+                .friends(updatedFriends)
+                .build();
+
+        return userMapper.userToDto(userRepository.save(userWithNewFriend));
     }
 
     @Override
