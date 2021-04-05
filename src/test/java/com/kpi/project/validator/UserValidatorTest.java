@@ -107,7 +107,7 @@ public class UserValidatorTest {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
-                .withMessage("Email is not valid");
+                .withMessage("Not valid email");
     }
 
     @Test

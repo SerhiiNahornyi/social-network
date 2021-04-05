@@ -20,8 +20,6 @@ public class UserValidator {
 
     private final UserRepository userRepository;
 
-    private final EmailValidator emailValidator = EmailValidator.getInstance();
-
     public UserValidator(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -79,8 +77,9 @@ public class UserValidator {
         if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
+        final EmailValidator emailValidator = EmailValidator.getInstance();
         if (!emailValidator.isValid(userDto.getEmail())) {
-            throw new ValidatorException("Email is not valid");
+            throw new ValidatorException("Not valid email");
         }
 
         final User userByEmail = userRepository.findByEmail(userDto.getEmail());
