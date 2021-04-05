@@ -115,7 +115,7 @@ public class UserService implements UserDetailsService {
     public UserDto saveUser(UserDto userDto) {
         final String userPassword = userDto.getPassword();
         userValidator.validatePassword(userPassword, userDto.getMatchingPassword());
-        userValidator.validateUser(userDto.getEmail(), userDto.getUsername());
+        userValidator.validateUser(userDto);
         final User userToSave = userMapper.dtoToUser(userDto).toBuilder()
                 .password(passwordEncoder.encode(userPassword))
                 .roles(Collections.singleton(Role.USER))

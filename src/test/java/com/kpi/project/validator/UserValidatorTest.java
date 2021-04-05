@@ -1,17 +1,24 @@
 package com.kpi.project.validator;
 
 import com.kpi.project.model.User;
+import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.model.post.Post;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
+import io.jsonwebtoken.lang.Assert;
+import javassist.NotFoundException;
+import org.assertj.core.api.NotThrownAssert;
+import org.hibernate.criterion.NotEmptyExpression;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.NotActiveException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,7 +26,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -66,7 +73,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserShouldThrowExceptionIfPasswordDoesNotMatch() {
+    public void validatePasswordShouldThrowExceptionIfPasswordDoesNotMatch() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validatePassword("password", "wrongPassword"))
@@ -74,7 +81,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserShouldThrowExceptionIfPasswordHasIncorrectLength() {
+    public void validatePasswordShouldThrowExceptionIfPasswordHasIncorrectLength() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validatePassword("pa", "pa"))
@@ -83,17 +90,25 @@ public class UserValidatorTest {
 
     @Test
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
+        // given
+        final UserDto givenUserDto = UserDto.builder().build();
+
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("", "username"))
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
                 .withMessage("Email should be present");
     }
 
     @Test
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
+        // given
+        final UserDto givenUserDto = UserDto.builder()
+                .email("email@mail.com")
+                .build();
+
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", ""))
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
                 .withMessage("Username should be present");
     }
 
@@ -101,12 +116,16 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfEmailAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
+        final UserDto givenUserDto = UserDto.builder()
+                .username("username")
+                .email("email@mail.com")
+                .build();
 
         given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "username"))
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
                 .withMessage("Email already exists");
     }
 
@@ -114,12 +133,16 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.username("existingUserName"));
+        final UserDto givenUserDto = UserDto.builder()
+                .username("existingUserName")
+                .email("email@mail.com")
+                .build();
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
-                .isThrownBy(() -> testingInstance.validateUser("email@mail.com", "existingUserName"))
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
                 .withMessage("Username already exists");
     }
 
@@ -146,7 +169,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserHavePermissionShouldThrowExceptionWhenUserIsNotAdmin() {
+    public void validateUserPermissionShouldThrowExceptionWhenUserIsNotAdmin() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.id(2L).roles(Collections.emptySet()));
 
@@ -159,7 +182,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserHavePermissionShouldNotThrowException() {
+    public void validateUserPermissionShouldNotThrowException() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.roles(Collections.emptySet()));
 
@@ -186,6 +209,34 @@ public class UserValidatorTest {
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateFriendToAdd(null, "username"))
                 .withMessage("User with username: username, not exists");
+    }
+
+    @Test
+    public void validateUserShouldThrowExceptionIfUserAgeIsUnderSixteen() {
+        //given
+        final UserDto givenUserDto = UserDto.builder()
+                .username("existingUserName")
+                .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16))
+                .build();
+
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
+                .withMessage("Age restriction of sixteen years");
+    }
+
+    @Test
+    public void validateUserShouldNotThrowExceptionIfUserIsValid() {
+        //given
+        final UserDto givenUserDto = UserDto.builder()
+                .username("username")
+                .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
+                .build();
+
+        //expected
+        assertDoesNotThrow(() -> testingInstance.validateUser(givenUserDto));
     }
 
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
