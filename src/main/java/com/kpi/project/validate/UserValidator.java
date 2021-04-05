@@ -1,6 +1,7 @@
 package com.kpi.project.validate;
 
 import com.kpi.project.model.User;
+import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
@@ -67,21 +69,24 @@ public class UserValidator {
         }
     }
 
-    public void validateUser(String userEmail, String userName) {
-        if (StringUtils.isBlank(userEmail)) {
+    public void validateUser(UserDto userDto) {
+        if (StringUtils.isBlank(userDto.getEmail())) {
             throw new ValidatorException("Email should be present");
         }
-        if (StringUtils.isBlank(userName)) {
+        if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
 
-        final User userByEmail = userRepository.findByEmail(userEmail);
-        final User userByUsername = userRepository.findByUsername(userName);
+        final User userByEmail = userRepository.findByEmail(userDto.getEmail());
+        final User userByUsername = userRepository.findByUsername(userDto.getUsername());
         if (Objects.nonNull(userByEmail)) {
             throw new ValidatorException("Email already exists");
         }
         if (Objects.nonNull(userByUsername)) {
             throw new ValidatorException("Username already exists");
+        }
+        if (!userDto.getDateOfBirth().isBefore(LocalDate.now().minusYears(16))) {
+            throw new ValidatorException("Age restriction of sixteen years");
         }
     }
 }
