@@ -6,17 +6,12 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
-import io.jsonwebtoken.lang.Assert;
-import javassist.NotFoundException;
-import org.assertj.core.api.NotThrownAssert;
-import org.hibernate.criterion.NotEmptyExpression;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.NotActiveException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
