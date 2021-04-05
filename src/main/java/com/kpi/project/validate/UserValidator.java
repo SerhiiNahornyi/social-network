@@ -70,9 +70,6 @@ public class UserValidator {
         if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
-        if (userDto.getAge().isAfter(LocalDate.now().minusYears(16))) {
-            throw new ValidatorException("User must be over sixteen years old");
-        }
 
         final User userByEmail = userRepository.findByEmail(userDto.getEmail());
         final User userByUsername = userRepository.findByUsername(userDto.getUsername());
@@ -81,6 +78,12 @@ public class UserValidator {
         }
         if (Objects.nonNull(userByUsername)) {
             throw new ValidatorException("Username already exists");
+        }
+        if (!userDto.getDayOfBirth().isAfter(LocalDate.now().minusYears(16))) {
+            throw new ValidatorException("User over 16");
+        }
+        if (userDto.getDayOfBirth().isAfter(LocalDate.now().minusYears(16))) {
+            throw new ValidatorException("User must be over sixteen years old");
         }
     }
 }

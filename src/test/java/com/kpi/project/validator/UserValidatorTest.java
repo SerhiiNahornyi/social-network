@@ -52,7 +52,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
         // given
-        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.email(null));
+        final UserDto userDto = UserDto.builder()
+                .username("user")
+                .email(null)
+                .dayOfBirth(LocalDate.of(2010, 1, 1))
+                .build();
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
@@ -63,7 +67,11 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
         // given
-        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.username(null));
+        final UserDto userDto = UserDto.builder()
+                .username(null)
+                .email("same@same.com")
+                .dayOfBirth(LocalDate.of(2010, 1, 1))
+                .build();
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
@@ -75,7 +83,11 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfEmailAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
-        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.email("email@mail.com"));
+        final UserDto userDto = UserDto.builder()
+                .username("user")
+                .email("email@mail.com")
+                .dayOfBirth(LocalDate.of(2010, 1, 1))
+                .build();
 
         given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
 
@@ -89,7 +101,11 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.username("existingUserName"));
-        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.username("existingUserName"));
+        final UserDto userDto = UserDto.builder()
+                .username("existingUserName")
+                .email("same@same.com")
+                .dayOfBirth(LocalDate.of(2010, 1, 1))
+                .build();
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
 
@@ -159,7 +175,25 @@ public class UserValidatorTest {
     @Test
     public void validateUserAgeShouldThrowExceptionIfUserAgeIsUnderSixteen() {
         //given
-        final UserDto userDto = givenUserDto(userDtoBuilder -> userDtoBuilder.age(LocalDate.of(2010, 1, 1)));
+        final UserDto userDto = UserDto.builder()
+                .username("existingUserName")
+                .email("same@same.com")
+                .dayOfBirth(LocalDate.now().minusYears(16))
+                .build();
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser(userDto))
+                .withMessage("User over 16");
+    }
+
+    @Test
+    public void validateUserAgeShouldThrowExceptionIfUserAgeIsOverSixteen() {
+        //given
+        final UserDto userDto = UserDto.builder()
+                .username("existingUserName")
+                .email("same@same.com")
+                .dayOfBirth(LocalDate.now().minusYears(16).plusDays(1))
+                .build();
         //expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(userDto))
@@ -173,17 +207,6 @@ public class UserValidatorTest {
                 .username("username")
                 .password("password")
                 .roles(Collections.singleton(Role.USER)))
-                .build();
-    }
-
-    private static UserDto givenUserDto(Function<UserDto.UserDtoBuilder, UserDto.UserDtoBuilder> userDtoCustomizer) {
-        return userDtoCustomizer.apply(UserDto.builder()
-                .id(1L)
-                .email("mail@mail.com")
-                .username("username")
-                .age(LocalDate.of(2000, 1, 1))
-                .password("password")
-                .matchingPassword("password"))
                 .build();
     }
 }

@@ -16,7 +16,7 @@ public class UserDto {
     String username;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    LocalDate age;
+    LocalDate dayOfBirth;
 
     String email;
 
