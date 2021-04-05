@@ -21,12 +21,11 @@ public class UserDto {
 
     String email;
 
-    Set<User> friends;
-
     String password;
 
     String matchingPassword;
 
     Set<String> roles;
 
+    Set<User> friends;
 }

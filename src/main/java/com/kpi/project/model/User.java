@@ -58,6 +58,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     Set<Role> roles;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "USER_FRIENDS", joinColumns = @JoinColumn(name = "USER_ID"))
+    Set<User> friends;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();

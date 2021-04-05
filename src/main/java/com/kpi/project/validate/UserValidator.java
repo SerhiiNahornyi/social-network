@@ -50,7 +50,7 @@ public class UserValidator {
 
     public void validateUserExistence(Long id) {
         if (Objects.isNull(userRepository.findByIdIdentifier(id))) {
-            throw new ValidatorException(String.format("User with id : %s, not exists", id));
+            throw new ValidatorException(String.format("User with id: %s, not exists", id));
         }
     }
 
