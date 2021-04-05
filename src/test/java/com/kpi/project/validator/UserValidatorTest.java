@@ -57,8 +57,7 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailIsNotPresent() {
         // given
-        final UserDto givenUserDto = UserDto.builder()
-                .build();
+        final UserDto givenUserDto = UserDto.builder().build();
 
         // expected
         assertThatExceptionOfType(ValidatorException.class)
@@ -70,7 +69,7 @@ public class UserValidatorTest {
     public void validateUserShouldThrowExceptionIfUserNameIsNotPresent() {
         // given
         final UserDto givenUserDto = UserDto.builder()
-                .email("same@same.com")
+                .email("email@mail.com")
                 .build();
 
         // expected
@@ -102,7 +101,7 @@ public class UserValidatorTest {
         final User givenUser = givenUser(userBuilder -> userBuilder.username("existingUserName"));
         final UserDto givenUserDto = UserDto.builder()
                 .username("existingUserName")
-                .email("same@same.com")
+                .email("email@mail.com")
                 .build();
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
@@ -183,7 +182,7 @@ public class UserValidatorTest {
         //given
         final UserDto givenUserDto = UserDto.builder()
                 .username("existingUserName")
-                .email("same@same.com")
+                .email("email@mail.com")
                 .dateOfBirth(LocalDate.now().minusYears(16))
                 .build();
 
@@ -197,8 +196,8 @@ public class UserValidatorTest {
     public void validateUserAgeShouldUserAgeIsOlderSixteen() {
         //given
         final UserDto givenUserDto = UserDto.builder()
-                .username("userName")
-                .email("same@same.com")
+                .username("username")
+                .email("email@mail.com")
                 .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
