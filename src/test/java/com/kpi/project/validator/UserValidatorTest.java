@@ -96,6 +96,21 @@ public class UserValidatorTest {
     }
 
     @Test
+    public void validateUserShouldThrowExceptionIfEmailNotValid() {
+        // given
+        final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
+        final UserDto givenUserDto = UserDto.builder()
+                .username("username")
+                .email("notValidEmail@111.fgh")
+                .build();
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
+                .withMessage("Email is not valid");
+    }
+
+    @Test
     public void validateUserShouldThrowExceptionIfUserNameAlreadyExists() {
         // given
         final User givenUser = givenUser(userBuilder -> userBuilder.username("existingUserName"));
