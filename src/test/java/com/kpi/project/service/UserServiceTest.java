@@ -105,7 +105,7 @@ public class UserServiceTest {
     @Test
     public void addUserFriendShouldUpdateUsersFriends() {
         // given
-        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friendNames(Collections.singleton(User.builder().username("newFriend").build())));
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friends(Collections.singleton(User.builder().username("newFriend").build())));
         final User givenUser = givenUser(identity());
 
         given(userRepository.save(any())).willReturn(givenUser);
