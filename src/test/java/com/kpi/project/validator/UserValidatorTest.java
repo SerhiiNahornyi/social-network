@@ -193,7 +193,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void validateUserAgeShouldUserAgeIsOlderSixteen() {
+    public void userAgeShouldBeOverSixteen() {
         //given
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
