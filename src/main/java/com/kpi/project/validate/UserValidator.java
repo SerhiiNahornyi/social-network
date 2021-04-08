@@ -6,6 +6,7 @@ import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.EmailValidator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -75,6 +76,10 @@ public class UserValidator {
         }
         if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
+        }
+        final EmailValidator emailValidator = EmailValidator.getInstance();
+        if (!emailValidator.isValid(userDto.getEmail())) {
+            throw new ValidatorException("Not valid email");
         }
 
         final User userByEmail = userRepository.findByEmail(userDto.getEmail());
