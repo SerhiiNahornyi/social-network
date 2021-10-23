@@ -4,6 +4,7 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
+import com.kpi.project.model.post.Post;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,39 @@ public class UserValidatorTest {
 
     @InjectMocks
     private UserValidator testingInstance;
+
+    @Test
+    public void validatePostToAddShouldThrowExceptionIfAuthorIsNotPresent() {
+        //given
+        final Post givenPost = new Post("imageURL", "description", "comment", null);
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePostToAdd(givenPost))
+                .withMessage("The post must include the author");
+    }
+
+    @Test
+    public void validatePostToAddShouldThrowExceptionIfImageURLIsNotPresent() {
+        //given
+        final Post givenPost = new Post(null, "description", "comment", null);
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePostToAdd(givenPost))
+                .withMessage("URL should be present");
+    }
+
+    @Test
+    public void validatePostToAddShouldThrowExceptionIfDescriptionIsNotPresent() {
+        //given
+        final Post givenPost = new Post("imageURL", null, "comment", null);
+
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePostToAdd(givenPost))
+                .withMessage("Description should be present");
+    }
 
     @Test
     public void validatePasswordShouldThrowExceptionIfPasswordDoesNotMatch() {

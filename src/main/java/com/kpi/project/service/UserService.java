@@ -4,6 +4,8 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
+import com.kpi.project.model.post.Post;
+import com.kpi.project.repository.PostRepository;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.springframework.security.core.Authentication;
@@ -23,13 +25,15 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserValidator userValidator,
+    public UserService(UserRepository userRepository, PostRepository postRepository, UserValidator userValidator,
                        UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
         this.userValidator = userValidator;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -79,6 +83,28 @@ public class UserService implements UserDetailsService {
                 .build();
 
         return userMapper.userToDto(userRepository.save(userWithNewFriend));
+    }
+
+    public UserDto addUserPost(Post post) throws UsernameNotFoundException {
+        final SecurityContext context = SecurityContextHolder.getContext();
+        final Authentication authentication = context.getAuthentication();
+        final String username = authentication != null ? authentication.getName() : null;
+        final User userFromToken = userRepository.findByUsername(username);
+        final Post newPost = new Post(post.getImageURL(), post.getDescription(), post.getComment(), userFromToken);
+
+        userValidator.validatePostToAdd(newPost);
+        postRepository.save(newPost);
+
+        final Set<Post> updatedPost = userFromToken.getPosts() != null
+                ? userFromToken.getPosts()
+                : new HashSet<>();
+        updatedPost.add(newPost);
+
+        final User userWithNewPost = userFromToken.toBuilder()
+                .posts(updatedPost)
+                .build();
+
+        return userMapper.userToDto(userRepository.save(userWithNewPost));
     }
 
     @Override

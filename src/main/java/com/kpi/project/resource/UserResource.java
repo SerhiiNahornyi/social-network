@@ -1,6 +1,7 @@
 package com.kpi.project.resource;
 
 import com.kpi.project.model.dto.UserDto;
+import com.kpi.project.model.post.Post;
 import com.kpi.project.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,13 @@ public class UserResource {
     @PutMapping("/user/add/friend")
     public ResponseEntity<UserDto> addUserFriends(@RequestBody String friendName) {
         final UserDto user = userService.addUserFriend(friendName);
+
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/user/add/post")
+    public ResponseEntity<UserDto> addUserPost(@RequestBody Post post) {
+        final UserDto user = userService.addUserPost(post);
 
         return ResponseEntity.ok(user);
     }

@@ -4,6 +4,7 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.exception.ValidatorException;
+import com.kpi.project.model.post.Post;
 import com.kpi.project.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.EmailValidator;
@@ -58,6 +59,18 @@ public class UserValidator {
     public void validateFriendToAdd(User friend, String friendName) {
         if (friend == null) {
             throw new ValidatorException(String.format("User with username: %s, not exists", friendName));
+        }
+    }
+
+    public void validatePostToAdd(Post post) {
+        if (StringUtils.isBlank(post.getImageURL())) {
+            throw new ValidatorException("URL should be present");
+        }
+        if (StringUtils.isBlank(post.getDescription())) {
+            throw new ValidatorException("Description should be present");
+        }
+        if (post.getAuthor() == null) {
+            throw new ValidatorException("The post must include the author");
         }
     }
 

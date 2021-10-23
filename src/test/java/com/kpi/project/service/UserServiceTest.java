@@ -4,6 +4,8 @@ import com.kpi.project.model.User;
 import com.kpi.project.model.dto.UserDto;
 import com.kpi.project.model.enums.Role;
 import com.kpi.project.model.mapper.UserMapper;
+import com.kpi.project.model.post.Post;
+import com.kpi.project.repository.PostRepository;
 import com.kpi.project.repository.UserRepository;
 import com.kpi.project.validate.UserValidator;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,9 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PostRepository postRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -120,6 +125,32 @@ public class UserServiceTest {
                 .isNotNull()
                 .extracting(UserDto::toString)
                 .isNotNull();
+    }
+
+    @Test
+    public void addUserPostShouldUpdateUsersPosts(){
+        // given
+        final UserDto givenUserDto = givenUserDto(userDtoBuilder -> userDtoBuilder.friends(Collections.singleton(User.builder().username("newFriend").build())));
+        final User givenUser = givenUser(identity());
+        final Post newPost = new Post("imageURL", "description", "comment", givenUser);
+        newPost.setId(1);
+
+        final Set<Post> posts = new HashSet<>();
+        posts.add(newPost);
+
+        final UserDto givenUserDtoWithPost = givenUserDto.toBuilder().posts(posts).build();
+        final User givenUserWithPost = givenUser.toBuilder().posts(posts).build();
+
+        given(userRepository.save(any(User.class))).willReturn(givenUserWithPost);
+        given(postRepository.save(any())).willReturn(newPost);
+        given(userMapper.userToDto(givenUserWithPost)).willReturn(givenUserDtoWithPost);
+        given(userRepository.findByUsername(any())).willReturn(givenUser);
+
+        // when
+        final UserDto actualUser = testingInstance.addUserPost(newPost);
+
+        // then
+        assertThat(actualUser).isEqualTo(givenUserDtoWithPost);
     }
 
     @Test

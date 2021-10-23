@@ -2,6 +2,7 @@ package com.kpi.project.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kpi.project.model.User;
+import com.kpi.project.model.post.Post;
 import lombok.Builder;
 import lombok.Value;
 
@@ -28,4 +29,7 @@ public class UserDto {
     Set<String> roles;
 
     Set<User> friends;
+
+    Set<Post> posts;
+
 }
