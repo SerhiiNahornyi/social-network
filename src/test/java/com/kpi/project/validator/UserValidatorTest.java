@@ -80,6 +80,7 @@ public class UserValidatorTest {
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
                 .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
@@ -97,6 +98,7 @@ public class UserValidatorTest {
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
                 .email("notValidEmail@111.fgh")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         // expected
@@ -112,6 +114,7 @@ public class UserValidatorTest {
         final UserDto givenUserDto = UserDto.builder()
                 .username("existingUserName")
                 .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
@@ -200,6 +203,20 @@ public class UserValidatorTest {
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
                 .withMessage("Age restriction of sixteen years");
+    }
+
+    @Test
+    public void validateUserShouldThrowExceptionIfAgeIsAbsent() {
+        //given
+        final UserDto givenUserDto = UserDto.builder()
+                .username("existingUserName")
+                .email("email@mail.com")
+                .build();
+
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
+                .withMessage("Age should be present");
     }
 
     @Test
