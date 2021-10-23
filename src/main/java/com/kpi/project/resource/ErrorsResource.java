@@ -28,7 +28,7 @@ public class ErrorsResource extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleUncaughtException(Exception ex, WebRequest request) {
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .errorType(ErrorTypes.server_error)
-                .message(ex.getMessage())
+                .message("Critical error while request processing: " + ex.getMessage())
                 .build();
 
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
