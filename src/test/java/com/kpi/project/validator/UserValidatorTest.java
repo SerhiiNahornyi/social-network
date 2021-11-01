@@ -94,7 +94,6 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailNotValid() {
         // given
-        final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
                 .email("notValidEmail@111.fgh")
@@ -216,7 +215,7 @@ public class UserValidatorTest {
         //expected
         assertThatExceptionOfType(ValidatorException.class)
                 .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
-                .withMessage("Age should be present");
+                .withMessage("Date of birth should be present");
     }
 
     @Test
@@ -232,6 +231,7 @@ public class UserValidatorTest {
         assertDoesNotThrow(() -> testingInstance.validateUser(givenUserDto));
     }
 
+    // TODO: Add givenUserDTO
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
         return userCustomizer.apply(User.builder()
                 .id(1L)

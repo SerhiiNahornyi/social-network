@@ -19,6 +19,7 @@ public class UserDto {
 
     String username;
 
+    // TODO: move this logic to custom mapper configuration class
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     LocalDate dateOfBirth;
