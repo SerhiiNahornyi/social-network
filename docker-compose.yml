@@ -9,7 +9,7 @@ services:
     ports:
       - 3306:3306
 
-  myapp-main:
+  social-network-app:
     image: social-network
     restart: on-failure
     depends_on:
