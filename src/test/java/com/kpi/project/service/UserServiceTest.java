@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class UserServiceTest {
         // given
         final User givenUser = givenUser(identity());
 
-        given(userRepository.loadByEmailOrUsername("login")).willReturn(givenUser);
+        given(userRepository.loadByEmailOrUsername("login")).willReturn(Optional.of(givenUser));
 
         // when
         final User actualUser = testingInstance.loadUserByUsername("login");

@@ -2,6 +2,7 @@ package com.kpi.project.resource;
 
 import com.kpi.project.model.authentication.AuthenticationRequest;
 import com.kpi.project.model.authentication.AuthenticationResponse;
+import com.kpi.project.model.exception.ValidatorException;
 import com.kpi.project.service.UserService;
 import com.kpi.project.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class SystemResource {
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                             authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("incorrect password or login", e);
+            throw new ValidatorException("incorrect password or login", e);
         }
         final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
