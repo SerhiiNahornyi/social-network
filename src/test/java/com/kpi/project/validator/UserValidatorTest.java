@@ -34,6 +34,14 @@ public class UserValidatorTest {
     private UserValidator testingInstance;
 
     @Test
+    public void validatePasswordShouldThrowExceptionIfPasswordIsAbsent() {
+        // expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validatePassword(null, "wrongPassword"))
+                .withMessage("Password should be present");
+    }
+
+    @Test
     public void validatePasswordShouldThrowExceptionIfPasswordDoesNotMatch() {
         // expected
         assertThatExceptionOfType(ValidatorException.class)
