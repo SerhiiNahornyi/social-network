@@ -83,7 +83,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public User loadUserByUsername(String login) throws UsernameNotFoundException {
-        return userRepository.loadByEmailOrUsername(login);
+        return userRepository.loadByEmailOrUsername(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     public UserDto saveUser(UserDto userDto) {

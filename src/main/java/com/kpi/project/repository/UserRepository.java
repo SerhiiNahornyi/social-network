@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.email = :loginParam or u.username = :loginParam")
-    User loadByEmailOrUsername(@Param("loginParam") String loginParam);
+    Optional<User> loadByEmailOrUsername(@Param("loginParam") String loginParam);
 
     User findByEmailOrUsername(String email, String username);
 
