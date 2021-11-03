@@ -13,5 +13,8 @@ services:
     restart: on-failure
     depends_on:
       - social-network-db
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     ports:
       - 8090:8090
+      - 5005:5005
