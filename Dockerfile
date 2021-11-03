@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline
 
 COPY checkstyle.xml .
 COPY src/ /build/src/
-RUN mvn package
+RUN mvn package -DskipTests
 
 # Step : Package image
 FROM openjdk:11-jre-slim
