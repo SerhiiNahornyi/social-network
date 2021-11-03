@@ -80,6 +80,7 @@ public class UserValidatorTest {
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
                 .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         given(userRepository.findByEmail("email@mail.com")).willReturn(givenUser);
@@ -93,10 +94,10 @@ public class UserValidatorTest {
     @Test
     public void validateUserShouldThrowExceptionIfEmailNotValid() {
         // given
-        final User givenUser = givenUser(userBuilder -> userBuilder.email("email@mail.com"));
         final UserDto givenUserDto = UserDto.builder()
                 .username("username")
                 .email("notValidEmail@111.fgh")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         // expected
@@ -112,6 +113,7 @@ public class UserValidatorTest {
         final UserDto givenUserDto = UserDto.builder()
                 .username("existingUserName")
                 .email("email@mail.com")
+                .dateOfBirth(LocalDate.now().minusYears(16).minusDays(1))
                 .build();
 
         given(userRepository.findByUsername("existingUserName")).willReturn(givenUser);
@@ -203,6 +205,20 @@ public class UserValidatorTest {
     }
 
     @Test
+    public void validateUserShouldThrowExceptionIfAgeIsAbsent() {
+        //given
+        final UserDto givenUserDto = UserDto.builder()
+                .username("existingUserName")
+                .email("email@mail.com")
+                .build();
+
+        //expected
+        assertThatExceptionOfType(ValidatorException.class)
+                .isThrownBy(() -> testingInstance.validateUser(givenUserDto))
+                .withMessage("Date of birth should be present");
+    }
+
+    @Test
     public void validateUserShouldNotThrowExceptionIfUserIsValid() {
         //given
         final UserDto givenUserDto = UserDto.builder()
@@ -215,6 +231,7 @@ public class UserValidatorTest {
         assertDoesNotThrow(() -> testingInstance.validateUser(givenUserDto));
     }
 
+    // TODO: Add givenUserDTO
     private static User givenUser(Function<User.UserBuilder, User.UserBuilder> userCustomizer) {
         return userCustomizer.apply(User.builder()
                 .id(1L)

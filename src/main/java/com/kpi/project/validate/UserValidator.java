@@ -77,6 +77,11 @@ public class UserValidator {
         if (StringUtils.isBlank(userDto.getUsername())) {
             throw new ValidatorException("Username should be present");
         }
+        if (Objects.isNull(userDto.getDateOfBirth())) {
+            throw new ValidatorException("Date of birth should be present");
+        }
+
+        // TODO: Replace deprecated code
         final EmailValidator emailValidator = EmailValidator.getInstance();
         if (!emailValidator.isValid(userDto.getEmail())) {
             throw new ValidatorException("Not valid email");

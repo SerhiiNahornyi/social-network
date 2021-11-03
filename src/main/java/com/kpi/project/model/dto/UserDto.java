@@ -1,6 +1,5 @@
 package com.kpi.project.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kpi.project.model.User;
 import lombok.Builder;
 import lombok.Value;
@@ -16,7 +15,6 @@ public class UserDto {
 
     String username;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     LocalDate dateOfBirth;
 
     String email;
