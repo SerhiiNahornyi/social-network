@@ -6,7 +6,7 @@ security:
 spring:
   datasource:
     password: root
-    url: jdbc:mysql://social-network-db:3306/social-network?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://social-network-db:3306/social-network?serverTimezone=UTC
     username: root
   jpa:
     hibernate:
