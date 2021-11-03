@@ -62,7 +62,10 @@ public class UserValidator {
     }
 
     public void validatePassword(String password, String matchingPassword) {
-        if (!Objects.equals(password, matchingPassword)) {
+        if (Objects.isNull(password)) {
+            throw new ValidatorException("Password should be present");
+        }
+        if (!password.equals(matchingPassword)) {
             throw new ValidatorException("Passwords does not match");
         }
         if (password.length() < 4) {
