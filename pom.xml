@@ -180,7 +180,8 @@
                 <version>${surefire.plugin.version}</version>
             </plugin>
 
-            <plugin>
+            <!-- TODO: separate front-end from maven build -->
+           <!-- <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend.plugin.version}</version>
@@ -221,7 +222,8 @@
                     </execution>
                 </executions>
             </plugin>
-
+-->
         </plugins>
+        <finalName>social-network</finalName>
     </build>
 </project>
